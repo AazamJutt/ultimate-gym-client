@@ -1,5 +1,5 @@
 {
-  "name": "tailadmin-react-free",
+  "name": "ultimate-fitness-client",
   "private": true,
   "version": "1.3.7",
   "type": "module",
@@ -9,9 +9,8 @@
     "preview": "vite preview"
   },
   "author": {
-    "name": "TailAdmin",
-    "email": "hello@tailadmin.com",
-    "url": "https://tailadmin.com"
+    "name": "Ultimate Fitness",
+    "email": "m.aazamsultan21@gmail.com"
   },
   "dependencies": {
     "apexcharts": "^3.41.0",

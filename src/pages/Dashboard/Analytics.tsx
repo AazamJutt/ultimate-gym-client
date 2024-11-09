@@ -1,23 +1,47 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { HiUserGroup } from 'react-icons/hi2';
-import { PiFingerprintBold } from "react-icons/pi";
+import { MdClose } from 'react-icons/md';
+import { PiFingerprintBold } from 'react-icons/pi';
+import { useSelector } from 'react-redux';
 import CardDataStats from '../../components/CardDataStats';
 import CardLargeStats from '../../components/CardLargeStats';
 import ChartOne from '../../components/Charts/ChartOne';
-import ChartThree from '../../components/Charts/ChartThree';
 import ChartTwo from '../../components/Charts/ChartTwo';
-import MemberTrainerChart from '../../components/Charts/MembersTrainerChart';
+import MemberDiscoveryAnalytics from '../../components/Charts/MemberDiscoveryAnalytics';
+import MemberGenderAnalytics from '../../components/Charts/MemberGenderAnalytics';
+import MembersTrainerAnalytics from '../../components/Charts/MembersTrainerAnalytics';
+import MembershipTable from '../../components/Tables/MembershipTable';
+import { RootState } from '../../redux/store';
+import {
+  useGetDashboardDataQuery,
+  useGetMemberAnalyticsdDataQuery,
+} from '../../services/dashboard.service';
 
 const Analytics: React.FC = () => {
-  return (
+  const user = useSelector((state: RootState) => state.auth.user);
+  const {
+    data: dashboard,
+    isLoading,
+    refetch,
+  } = useGetDashboardDataQuery({
+    skip: !user,
+  });
+  const [viewMembers, setViewMembers] = useState('');
+  const [invoiceData, setInvoiceData] = useState();
+  const { data: memberAnalytics } = useGetMemberAnalyticsdDataQuery({
+    skip: !user,
+  });
+
+  const dashboardData = dashboard?.data;
+  return !user || !dashboard ? (
+    <div>Loading...</div>
+  ) : (
     <>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
         <div className="grid grid-cols-3 gap-4 col-span-2">
           <CardDataStats
             title="Registered Members"
-            total="1200"
-            rate="0.43%"
-            levelUp
+            total={dashboardData.registeredMembers.length}
           >
             <svg
               className="fill-primary dark:fill-white"
@@ -37,7 +61,10 @@ const Analytics: React.FC = () => {
               />
             </svg>
           </CardDataStats>
-          <CardDataStats title="Archived Members" total="20">
+          <CardDataStats
+            title="Archived Members"
+            total={dashboardData.archivedMembers.length}
+          >
             <svg
               className="fill-primary dark:fill-white"
               width="20"
@@ -60,7 +87,10 @@ const Analytics: React.FC = () => {
               />
             </svg>
           </CardDataStats>
-          <CardDataStats title="Inactive Members" total="2">
+          <CardDataStats
+            title="Inactive Members"
+            total={dashboardData.inactiveMembers.length}
+          >
             <svg
               className="fill-primary dark:fill-white"
               width="22"
@@ -79,7 +109,10 @@ const Analytics: React.FC = () => {
               />
             </svg>
           </CardDataStats>
-          <CardDataStats title="Incoming Fees" total="5">
+          <CardDataStats
+            title="Present Today"
+            total={dashboardData.presentMembers.length}
+          >
             <svg
               className="fill-primary dark:fill-white"
               width="22"
@@ -102,7 +135,10 @@ const Analytics: React.FC = () => {
               />
             </svg>
           </CardDataStats>
-          <CardDataStats title="Paid Fees" total="900">
+          <CardDataStats
+            title="Paid Fees"
+            total={dashboardData.paidFees.length}
+          >
             <svg
               className="fill-primary dark:fill-white"
               width="22"
@@ -125,7 +161,10 @@ const Analytics: React.FC = () => {
               />
             </svg>
           </CardDataStats>
-          <CardDataStats title="Pending Fees" total="3">
+          <CardDataStats
+            title="Active Members"
+            total={dashboardData.activeMembers.length}
+          >
             <svg
               className="fill-primary dark:fill-white"
               width="22"
@@ -151,18 +190,62 @@ const Analytics: React.FC = () => {
         </div>
         <CardLargeStats
           icon={<HiUserGroup size={100} />}
-          title="Active Members"
-          total={950}
-          actionLink="/members/all"
+          title="Pending Fees"
+          total={dashboardData.pendingFees.length}
+          onClick={() => setViewMembers('pendingFees')}
         />
-        <CardLargeStats icon={<PiFingerprintBold  size={100} />} title="Present Today" total={60} actionLink='#' />
+        <CardLargeStats
+          icon={<PiFingerprintBold size={100} />}
+          title="Incoming Fees"
+          total={dashboardData.incomingFees.length}
+          onClick={() => setViewMembers('incomingFees')}
+        />
       </div>
 
       <div className="mt-4 grid grid-cols-12 gap-4 md:mt-6 md:gap-6 2xl:mt-7.5 2xl:gap-7.5">
-        <ChartOne />
-        <ChartTwo />
-        <ChartThree />
-        <MemberTrainerChart />
+        {user.role === 'admin' && (
+          <>
+            <ChartOne />
+            <ChartTwo />
+          </>
+        )}
+        {memberAnalytics && (
+          <>
+            <MemberDiscoveryAnalytics
+              analytics={memberAnalytics.data?.discoverAnalytics}
+            />
+            <MembersTrainerAnalytics
+              analytics={memberAnalytics.data?.trainerAnalytics}
+            />
+            <MemberGenderAnalytics
+              analytics={memberAnalytics.data?.genderAnalytics}
+            />
+          </>
+        )}
+      </div>
+      <div
+        className={`${
+          !viewMembers ? 'hidden' : ''
+        } fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[10000]`}
+      >
+        <div className="bg-white dark:bg-strokedark p-4 rounded-lg shadow-xl text-black dark:text-white w-[80rem] max-w-[60rem]">
+          <div className="flex justify-between mb-2">
+            <span className="font-bold">Members</span>
+            <button onClick={() => setViewMembers('')} type="button">
+              <MdClose />
+            </button>
+          </div>
+          <div className="max-h-[50rem] overflow-auto">
+            <MembershipTable
+              loading={isLoading}
+              memberships={viewMembers ? dashboardData[viewMembers] : []}
+              refetch={refetch}
+              actions={false}
+              setInvoiceData={setInvoiceData}
+              invoiceData={invoiceData}
+            />
+          </div>
+        </div>
       </div>
     </>
   );

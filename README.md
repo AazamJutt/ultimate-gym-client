@@ -1,21 +1,21 @@
-# Ultimate Fitness React - Free React Tailwind Admin Dashboard Template
+# Ultimate Gym React - Free React Tailwind Admin Dashboard Template
 
-Ultimate Fitness is a free and open-source admin dashboard template built on **React and Tailwind CSS**, providing developers with everything they need to create a comprehensive, data-driven back-end, 
+Ultimate Gym is a free and open-source admin dashboard template built on **React and Tailwind CSS**, providing developers with everything they need to create a comprehensive, data-driven back-end, 
 dashboard, or admin panel solution for upcoming web projects.
 
-[![tailwind react admin template](https://ucarecdn.com/d2a6daed-eb9c-4c2f-8a95-4419c450e23a/Ultimate Fitnessreact.jpg)](https://react-demo.Ultimate Fitness.com/)
+[![tailwind react admin template](https://ucarecdn.com/d2a6daed-eb9c-4c2f-8a95-4419c450e23a/Ultimate Gymreact.jpg)](https://react-demo.Ultimate Gym.com/)
 
 
-With Ultimate Fitness, you get access to all the necessary dashboard UI components, elements, and pages required to build a feature-rich and complete dashboard or admin panel. Whether you're building dashboard or admin panel for a complex web application or a simple website, Ultimate Fitness is the perfect solution to help you get up and running quickly.
+With Ultimate Gym, you get access to all the necessary dashboard UI components, elements, and pages required to build a feature-rich and complete dashboard or admin panel. Whether you're building dashboard or admin panel for a complex web application or a simple website, Ultimate Gym is the perfect solution to help you get up and running quickly.
 
-### [✨ Visit Website](https://Ultimate Fitness.com/)
+### [✨ Visit Website](https://Ultimate Gym.com/)
 
-### [🚀 PRO Demo](https://react-demo.Ultimate Fitness.com/)
-### [🚀 FREE Demo](https://free-react-demo.Ultimate Fitness.com/)
+### [🚀 PRO Demo](https://react-demo.Ultimate Gym.com/)
+### [🚀 FREE Demo](https://free-react-demo.Ultimate Gym.com/)
 
-### Ultimate Fitness React PRO vs Ultimate Fitness React FREE Comparison 📊
+### Ultimate Gym React PRO vs Ultimate Gym React FREE Comparison 📊
 
-#### [Ultimate Fitness React PRO](https://react-demo.Ultimate Fitness.com/)
+#### [Ultimate Gym React PRO](https://react-demo.Ultimate Gym.com/)
 - 5 Unique Dashboards: Analytics, Ecommerce, Marketing, and CRM (More will be added)
 - 120+ Dashboard UI Components
 - 200+ Total UI Elements
@@ -25,7 +25,7 @@ With Ultimate Fitness, you get access to all the necessary dashboard UI componen
 
 ___
 
-#### [Ultimate Fitness React FREE](https://free-react-demo.Ultimate Fitness.com/)
+#### [Ultimate Gym React FREE](https://free-react-demo.Ultimate Gym.com/)
 - 1 Unique Dashboard
 - 30+ Dashboard UI Components
 - 50+ Total UI Elements 
@@ -35,25 +35,25 @@ ___
 - Figma Design Source - Free Sample
 ___
 
-### [⬇️ Download Now](https://Ultimate Fitness.com/download)
+### [⬇️ Download Now](https://Ultimate Gym.com/download)
 
-### [⚡ Get PRO Version](https://Ultimate Fitness.com/pricing)
+### [⚡ Get PRO Version](https://Ultimate Gym.com/pricing)
 
-### [📄 Documentation/Installation](https://Ultimate Fitness.com/docs)
+### [📄 Documentation/Installation](https://Ultimate Gym.com/docs)
 
-### [🖌️ Ultimate Fitness Figma Free Sample](https://www.figma.com/community/file/1214477970819985778)
+### [🖌️ Ultimate Gym Figma Free Sample](https://www.figma.com/community/file/1214477970819985778)
 
-### [👉 Ultimate Fitness HTML Version](https://github.com/Ultimate Fitness/Ultimate Fitness-free-tailwind-dashboard-template)
+### [👉 Ultimate Gym HTML Version](https://github.com/Ultimate Gym/Ultimate Gym-free-tailwind-dashboard-template)
 
-Ultimate Fitness React dashboard template based on Tailwind CSS is a pre-designed starting point for building a web-based dashboard using the React JavaScript library and the Tailwind CSS utility-first framework. This Tailwind CSS + React Dashboard Template - built using Tailwind CSS and **includes pre-built components, such as navigation menus, charts, tables, and forms, which can be easily customized and integrated into a small-to-large React web application**.
+Ultimate Gym React dashboard template based on Tailwind CSS is a pre-designed starting point for building a web-based dashboard using the React JavaScript library and the Tailwind CSS utility-first framework. This Tailwind CSS + React Dashboard Template - built using Tailwind CSS and **includes pre-built components, such as navigation menus, charts, tables, and forms, which can be easily customized and integrated into a small-to-large React web application**.
 
-If you're looking for a high-quality **React-Tailwind Dashboard, Admin Panel Template, or UI Kit**, Ultimate Fitness will be the perfect choice for you!
+If you're looking for a high-quality **React-Tailwind Dashboard, Admin Panel Template, or UI Kit**, Ultimate Gym will be the perfect choice for you!
 
-## Ultimate Fitness React - Installation
+## Ultimate Gym React - Installation
 
-You'll need to install Node.js >=v14.16+ (Recommended Version) (NPM comes along with it) and Ultimate Fitness uses **Vite** for frontend tooling, to peform installation and building production version, please follow these steps from below:
+You'll need to install Node.js >=v14.16+ (Recommended Version) (NPM comes along with it) and Ultimate Gym uses **Vite** for frontend tooling, to peform installation and building production version, please follow these steps from below:
 
-- Use terminal and navigate to the project (Ultimate Fitness-react) root.
+- Use terminal and navigate to the project (Ultimate Gym-react) root.
 
 - Then run : <code>npm install</code>
 
@@ -69,7 +69,7 @@ Default build output directory: /dist
 This command will generate a dist as build folder in the root of your template that you can upload to your server.
 
 ## Tons of React Tailwind Components for Dashboard
-React and Tailwind are two popular technologies that have taken the web development world by storm. React is a JavaScript library for building user interfaces, while Tailwind is a utility-first CSS framework that makes it easy to style web applications. Ultimate Fitness React Offers 200+ Essential React + Tailwind CSS UI Components that you copy-paste and use with your dashboard projects. That includes - charts, graphs, navbars, tabs, buttons, cards, tables, profile, tabs, forms, modals, app pages, calender, web apps example templates and more... for React and Styled using Tailwind CSS
+React and Tailwind are two popular technologies that have taken the web development world by storm. React is a JavaScript library for building user interfaces, while Tailwind is a utility-first CSS framework that makes it easy to style web applications. Ultimate Gym React Offers 200+ Essential React + Tailwind CSS UI Components that you copy-paste and use with your dashboard projects. That includes - charts, graphs, navbars, tabs, buttons, cards, tables, profile, tabs, forms, modals, app pages, calender, web apps example templates and more... for React and Styled using Tailwind CSS
 
 
 
@@ -94,8 +94,8 @@ React and Tailwind are two popular technologies that have taken the web developm
 
 ### Version 1.2.0 - [Apr 28, 2023]
 
-- Add Typescript in Ultimate Fitness React.
+- Add Typescript in Ultimate Gym React.
 
 ### Version 1.0.0 - Initial Release - [Mar 13, 2023]
 
-- Initial release of Ultimate Fitness React.
+- Initial release of Ultimate Gym React.

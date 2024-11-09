@@ -1,49 +1,81 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
-import DefaultLayout from './layout/DefaultLayout';
+import LayoutWrapper from './layout/LayoutWrapper';
+import AddAttendance from './pages/Attendance/AddAttendance';
+import AttendanceHistory from './pages/Attendance/AttendanceHistory';
 import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
 import Analytics from './pages/Dashboard/Analytics';
-import FormElements from './pages/Form/FormElements';
-import FormLayout from './pages/Form/FormLayout';
-import AddMember from './pages/Members/AddMember';
-import Archived from './pages/Members/Archived';
-import List from './pages/Members/List';
-import StaffList from './pages/Staff/List';
-import Profile from './pages/Profile';
+import AddMember from './pages/Members/Client/AddMember';
+import EditMember from './pages/Members/Client/EditMember';
+import List from './pages/Members/Client/List';
+import AddStaff from './pages/Members/Staff/AddStaff';
+import EditStaff from './pages/Members/Staff/EditStaff';
+import StaffList from './pages/Members/Staff/List';
+import AddMembership from './pages/Memberships/AddMembership';
+import EditMembership from './pages/Memberships/EditMembership';
+import MembershipList from './pages/Memberships/List';
+import PackageList from './pages/Packages/List';
 import Settings from './pages/Settings';
-import Tables from './pages/Tables';
-import Alerts from './pages/UiElements/Alerts';
-import Buttons from './pages/UiElements/Buttons';
-import AddAttendance from './pages/Attendance/AddAttendance';
-import AttendanceHistory from './pages/Attendance/AttendanceHistory';
+import { useDispatch, useSelector } from 'react-redux';
+import InvoicesList from './pages/Invoices/List';
+import { loginUser } from './redux/slices/auth.slice';
+import { RootState } from './redux/store';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
+  const navigate = useNavigate(); // Initialize useNavigate for redirection
+  const dispatch = useDispatch();
+  // Assume this is how you check if the user is authenticated
+  const user = useSelector((state: RootState) => state.auth.user);
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
   useEffect(() => {
-    setTimeout(() => setLoading(false), 1000);
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, []);
+
+  useEffect(() => {
+    if (!user) {
+      const token = localStorage.getItem('auth_token') as string;
+      if (token) {
+        dispatch(loginUser(token));
+        navigate('/');
+      } else if (pathname !== '/auth/signin' && pathname !== '/auth/signup')
+        navigate('/auth/signin');
+    }
+  }, [user]);
 
   return loading ? (
     <Loader />
   ) : (
-    <DefaultLayout>
+    <LayoutWrapper>
       <Routes>
+        <Route
+          path="/auth/signin"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Signin" />
+              <SignIn />
+            </>
+          }
+        />
         <Route
           index
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Dashboard" />
+              <PageTitle title="Ultimate Gym | Dashboard" />
               <Analytics />
             </>
           }
@@ -52,8 +84,12 @@ function App() {
           path="/members/all"
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Members | All" />
-              <List />
+              <PageTitle title="Ultimate Gym | Members | All" />
+              <List
+                listFilter={{
+                  status: '',
+                }}
+              />
             </>
           }
         />
@@ -61,8 +97,12 @@ function App() {
           path="/members/archived"
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Members | Archived" />
-              <Archived />
+              <PageTitle title="Ultimate Gym | Members | Archived" />
+              <List
+                listFilter={{
+                  archived: true,
+                }}
+              />
             </>
           }
         />
@@ -70,40 +110,128 @@ function App() {
           path="/members/add"
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Members | Add" />
+              <PageTitle title="Ultimate Gym | Members | Add" />
               <AddMember />
             </>
           }
         />
-        <Route path='/staff/all' element={
-          <>
-            <PageTitle title="Ultimate Fitness | Staff | All" />
-            <StaffList />
-          </>
-        }
+        <Route
+          path="/members/:id/edit"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Members | Edit" />
+              <EditMember />
+            </>
+          }
+        />
+        <Route
+          path="/memberships/all"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Members | All" />
+              <MembershipList />
+            </>
+          }
+        />
+        <Route
+          path="/memberships/add"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Membership | Add" />
+              <AddMembership />
+            </>
+          }
+        />
+        <Route
+          path="/memberships/:membership_id/edit"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Membership | Edit" />
+              <EditMembership />
+            </>
+          }
+        />
+        <Route
+          path="/staff/all"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Staff | All" />
+              <StaffList
+                listFilter={{
+                  status: '',
+                }}
+              />
+            </>
+          }
+        />
+        <Route
+          path="/staff/archived"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Staff | Archived" />
+              <StaffList
+                listFilter={{
+                  archived: true,
+                }}
+              />
+            </>
+          }
         />
         <Route
           path="/staff/add"
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Members | Add" />
-              <AddMember />
+              <PageTitle title="Ultimate Gym | Members | Add" />
+              <AddStaff />
             </>
           }
         />
-        <Route path='/attendance/history' element={
-          <>
-            <PageTitle title="Ultimate Fitness | Attendance | History" />
-            <AttendanceHistory />
-          </>
-        }
+        <Route
+          path="/staff/:id/edit"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Staff | Edit" />
+              <EditStaff />
+            </>
+          }
+        />
+        <Route
+          path="/attendance/history"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Attendance | History" />
+              <AttendanceHistory />
+            </>
+          }
         />
         <Route
           path="/attendance/add"
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Attendance | Add" />
+              <PageTitle title="Ultimate Gym | Attendance | Add" />
               <AddAttendance />
+            </>
+          }
+        />
+        <Route
+          path="/packages/all"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Packages" />
+              <PackageList
+                listFilter={{
+                  archived: true,
+                }}
+              />
+            </>
+          }
+        />
+        <Route
+          path="/invoices/all"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Invoices" />
+              <InvoicesList />
             </>
           }
         />
@@ -111,44 +239,8 @@ function App() {
           path="/calendar"
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Calendar" />
+              <PageTitle title="Ultimate Gym | Calendar" />
               <Calendar />
-            </>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <>
-              <PageTitle title="Ultimate Fitness | Profile" />
-              <Profile />
-            </>
-          }
-        />
-        <Route
-          path="/forms/form-elements"
-          element={
-            <>
-              <PageTitle title="Ultimate Fitness | Form Elements" />
-              <FormElements />
-            </>
-          }
-        />
-        <Route
-          path="/forms/form-layout"
-          element={
-            <>
-              <PageTitle title="Ultimate Fitness | Form Layout" />
-              <FormLayout />
-            </>
-          }
-        />
-        <Route
-          path="/tables"
-          element={
-            <>
-              <PageTitle title="Ultimate Fitness | Tables" />
-              <Tables />
             </>
           }
         />
@@ -156,35 +248,8 @@ function App() {
           path="/settings"
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Settings" />
+              <PageTitle title="Ultimate Gym | Settings" />
               <Settings />
-            </>
-          }
-        />
-        <Route
-          path="/ui/alerts"
-          element={
-            <>
-              <PageTitle title="Ultimate Fitness | Alerts" />
-              <Alerts />
-            </>
-          }
-        />
-        <Route
-          path="/ui/buttons"
-          element={
-            <>
-              <PageTitle title="Ultimate Fitness | Buttons" />
-              <Buttons />
-            </>
-          }
-        />
-        <Route
-          path="/auth/signin"
-          element={
-            <>
-              <PageTitle title="Ultimate Fitness | Signin" />
-              <SignIn />
             </>
           }
         />
@@ -192,13 +257,14 @@ function App() {
           path="/auth/signup"
           element={
             <>
-              <PageTitle title="Ultimate Fitness | Signup" />
+              <PageTitle title="Ultimate Gym | Signup" />
               <SignUp />
             </>
           }
         />
       </Routes>
-    </DefaultLayout>
+      <ToastContainer position="bottom-right" />
+    </LayoutWrapper>
   );
 }
 

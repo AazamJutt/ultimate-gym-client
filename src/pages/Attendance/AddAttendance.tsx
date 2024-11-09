@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 
 const AddAttendance = () => {
     const [selectedStatus, setSelectedStatus] = useState('');
 
-    const handleStatusChange = (status) => {
+    const handleStatusChange = (status: string) => {
         setSelectedStatus(status);
     };
 

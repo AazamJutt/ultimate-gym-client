@@ -1,0 +1,30 @@
+import { Staff } from './staff';
+
+export type Client = {
+  id?: number;
+  member_id?: number;
+  client_id?: string;
+  name: string;
+  phone: string;
+  gender: string;
+  personal_fee?: number;
+  training_fee?: number;
+  joining_date: string;
+  fee_date?: string;
+  cnic?: string;
+  address?: string;
+  height?: number;
+  locker_number?: string;
+  trainer?: Staff;
+  nutritionist?: string;
+  blood_group?: string;
+  profession?: string;
+  discovery_method?: string;
+  dob?: string;
+  bodyweight?: number;
+  secondary_phone?: string;
+  image?: string;
+  membership_id?: number;
+  status?: string;
+  attendance: string;
+};

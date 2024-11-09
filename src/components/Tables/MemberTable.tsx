@@ -1,172 +1,167 @@
-import { useEffect, useState } from 'react';
-import UserOne from '../../images/user/user-01.png';
-import { Member } from '../../types/member';
-
-const membersData: Member[] = [
-  {
-    id: 1,
-    name: 'James Colby',
-    phone: '1234567890',
-    gender: 'Male',
-    personalfee: 100,
-    trainingfee: 200,
-    joiningdate: '2022-01-01',
-    feeDate: '2022-01-01',
-    cnic: '1234567890',
-  },
-  {
-    id: 2,
-    name: 'Patricia Smith',
-    phone: '1234567890',
-    gender: 'Female',
-    personalfee: 100,
-    trainingfee: 200,
-    joiningdate: '2022-01-01',
-    feeDate: '2022-01-01',
-    cnic: '1234567890',
-  },
-  {
-    id: 3,
-    name: 'John doe',
-    phone: '1234567890',
-    gender: 'Male',
-    personalfee: 100,
-    trainingfee: 200,
-    joiningdate: '2022-01-01',
-    feeDate: '2022-01-01',
-    cnic: '1234567890',
-  },
-  {
-    id: 4,
-    name: 'Kamala Harris',
-    phone: '1234567890',
-    gender: 'Female',
-    personalfee: 100,
-    trainingfee: 200,
-    joiningdate: '2022-01-01',
-    feeDate: '2022-01-01',
-    cnic: '1234567890',
-  },
-  {
-    id: 5,
-    name: 'Michael Scott',
-    phone: '1234567890',
-    gender: 'Male',
-    personalfee: 100,
-    trainingfee: 200,
-    joiningdate: '2022-01-01',
-    feeDate: '2022-01-01',
-    cnic: '1234567890',
-  },
-  {
-    id: 6,
-    name: 'Emma Watson',
-    phone: '1234567890',
-    gender: 'Female',
-    personalfee: 100,
-    trainingfee: 200,
-    joiningdate: '2022-01-01',
-    feeDate: '2022-01-01',
-    cnic: '1234567890',
-  },
-  {
-    id: 7,
-    name: 'Chris Evans',
-    phone: '1234567890',
-    gender: 'Male',
-    personalfee: 100,
-    trainingfee: 200,
-    joiningdate: '2022-01-01',
-    feeDate: '2022-01-01',
-    cnic: '1234567890',
-  },
-];
+import moment from 'moment';
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import defaultImage from '../../images/user/user-03.png';
+import {
+  clientApi,
+  useDeleteClientMutation,
+} from '../../services/client.service';
+import { Client } from '../../types/Client';
+import { Staff } from '../../types/staff';
+import { capitalize } from '../../utils/helpers';
+import ViewMemberModal from '../Modals/ViewMemberModal';
+import { FaCheck } from 'react-icons/fa';
+import { useMarkAttendanceMutation } from '../../services/attendance.service';
+import { toast } from 'react-toastify';
+import { useDispatch, useSelector } from 'react-redux';
+import { dashboardApi } from '../../services/dashboard.service';
+import { staffApi } from '../../services/staff.service';
+import { RootState } from '../../redux/store';
 
 const SkeletonLoader = () => {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-10 rounded-sm h-full animate-pulse">
-      <div className="p-2.5 xl:p-5">
-        <div className="w-12 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
-      <div className="p-2.5 flex items-center gap-4 xl:p-5 col-span-2">
-        <div className="h-12 w-12 rounded-full bg-slate-300 dark:bg-slate-700"></div>
-        <div className="w-32 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
-      <div className="p-2.5 text-center xl:p-5">
-        <div className="w-24 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
-      <div className="hidden p-2.5 text-center sm:block xl:p-5">
-        <div className="w-20 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
-      <div className="hidden p-2.5 text-center sm:block xl:p-5">
-        <div className="w-20 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
-      <div className="hidden p-2.5 text-center sm:block xl:p-5">
-        <div className="w-20 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
-      <div className="hidden p-2.5 text-center sm:block xl:p-5">
-        <div className="w-20 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
-      <div className="hidden p-2.5 text-center sm:block xl:p-5">
-        <div className="w-20 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
-      <div className="hidden p-2.5 text-center sm:block xl:p-5">
-        <div className="w-20 h-4 bg-slate-300 dark:bg-slate-700 rounded"></div>
-      </div>
+      {/* Skeleton structure */}
     </div>
   );
 };
 
-const MemberTable = () => {
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    setTimeout(() => {
-      setLoading(false);
-    }, 1000);
-  }, []);
+interface MemberTableProps {
+  loading: boolean;
+  members: Client[] | Staff[] | undefined;
+  staff?: boolean;
+  refetch: () => void;
+  actions?: boolean;
+}
+
+const MemberTable = ({
+  loading,
+  members,
+  staff,
+  refetch,
+  actions = true,
+}: MemberTableProps) => {
+  const navigate = useNavigate();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const dispatch = useDispatch();
+  const [deleteClient] = useDeleteClientMutation();
+  const [selectedMember, setSelectedMember] = useState<Client | Staff | null>(
+    null,
+  );
+  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
+  const [markAttendance] = useMarkAttendanceMutation();
+  const openViewModal = (member: Client | Staff) => {
+    setSelectedMember(member);
+    setIsViewModalOpen(true);
+  };
+
+  const closeViewModal = () => {
+    setSelectedMember(null);
+    setIsViewModalOpen(false);
+  };
+
+  const handleEditClick = (member: Client | Staff) => {
+    navigate(
+      `${
+        staff
+          ? `/staff/${(member as Staff).staff_id}`
+          : `/members/${(member as Client).client_id}`
+      }/edit`,
+    );
+  };
+
+  const handleDeleteClick = (member: Client) => {
+    if (window.confirm('Are you sure you want to delete this member?')) {
+      deleteClient(member?.client_id ?? '');
+    }
+  };
+
+  const handleMarkAttendance = async (
+    member: Client | Staff,
+    type: 'checkin' | 'checkout',
+  ): void => {
+    try {
+      if (!member.member_id) return;
+      const attendanceData = {
+        member_id: member.member_id,
+        date: moment().format('YYYY-MM-DD'),
+        checkout_at:
+          type === 'checkout' ? moment().format('YYYY-MM-DD HH:mm:ss') : null,
+      };
+      await markAttendance(attendanceData);
+      dispatch(dashboardApi.util.invalidateTags(['Dashboard']));
+      dispatch(clientApi.util.invalidateTags(['Client']));
+      dispatch(staffApi.util.invalidateTags(['Staff']));
+
+      toast.success('Attendance marked successfully');
+      refetch();
+    } catch (err) {
+      console.error(err);
+      toast.error('Could not mark Attendance');
+    }
+  };
+
   return (
-    <div className="rounded-sm max-h-[80vh] overflow-y-auto border border-stroke bg-white shadow-default dark:border-strokedark dark:bg-boxdark">
-      <div className="flex flex-col">
-        <div className="grid grid-cols-2 sm:grid-cols-10 rounded-sm bg-gray-2 dark:bg-meta-4">
-          <div className="p-2.5 xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">Id</p>
-          </div>
-          <div className="p-2.5 flex items-center xl:p-5 col-span-2">
-            <p className="text-black dark:text-white">Name</p>
-          </div>
-          <div className="p-2.5 text-center xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">Phone</p>
-          </div>
-          <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">Gender</p>
-          </div>
-          <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">
-              Personal Fee
-            </p>
-          </div>
-          <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">
-              Training Fee
-            </p>
-          </div>
-          <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">
-              Joining Date
-            </p>
-          </div>
-          <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">
-              Fee Date
-            </p>
-          </div>
-          <div className="hidden p-2.5 text-center sm:block xl:p-5">
-            <p className="hidden text-black dark:text-white sm:block">Cnic</p>
-          </div>
-        </div>
+    <div className="border border-stroke dark:border-graydark relative overflow-x-auto sm:rounded-t-lg">
+      <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
+        {members?.length ? (
+          <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
+            <tr>
+              <th scope="col" className="bg-gray-500 dark:bg-meta-4 p-4">
+                <p className="hidden text-black dark:text-white sm:block">Id</p>
+              </th>
+              <th
+                scope="col-2"
+                className="bg-gray-500 dark:bg-meta-4 px-6 py-3"
+              >
+                <p className="text-black dark:text-white">Name</p>
+              </th>
+              {staff && (
+                <th
+                  scope="col"
+                  className="bg-gray-500 dark:bg-meta-4 px-6 py-3"
+                >
+                  <p className="hidden text-black dark:text-white sm:block">
+                    Attendance Status
+                  </p>
+                </th>
+              )}
+              <th scope="col" className="bg-gray-500 dark:bg-meta-4 px-6 py-3">
+                <p className="hidden text-black dark:text-white sm:block">
+                  Gender
+                </p>
+              </th>
+              <th scope="col" className="bg-gray-500 dark:bg-meta-4 px-6 py-3">
+                <p className="hidden text-black dark:text-white sm:block">
+                  {staff ? 'Locker Number' : 'Joining Date'}
+                </p>
+              </th>
+              <th scope="col" className="bg-gray-500 dark:bg-meta-4 px-6 py-3">
+                <p className="hidden text-black dark:text-white sm:block">
+                  {staff ? 'Training Fee' : 'Fee Date'}
+                </p>
+              </th>
+              <th scope="col" className="bg-gray-500 dark:bg-meta-4 px-6 py-3">
+                <p className="hidden text-black dark:text-white sm:block">
+                  Phone
+                </p>
+              </th>
+
+              <th
+                scope="col"
+                className="bg-gray dark:bg-meta-4 px-6 py-3 sticky right-0"
+                style={{ zIndex: 1 }}
+              >
+                <p className="text-black dark:text-white">Actions</p>
+              </th>
+            </tr>
+          </thead>
+        ) : (
+          ''
+        )}
         {loading ? (
           <>
-            {/* Render skeleton loaders */}
             {Array(8)
               .fill(0)
               .map((_, idx) => (
@@ -175,91 +170,189 @@ const MemberTable = () => {
           </>
         ) : (
           <>
-            {membersData.map((member) => (
-              <div className="grid grid-cols-2 sm:grid-cols-10 rounded-sm h-full">
-                <div className="p-2.5 xl:p-5">
-                  <p className="text-black dark:text-white">{member.id}</p>
-                </div>
-                <div className="p-2.5 flex items-center gap-4 xl:p-5 col-span-2">
-                  {/* Add the circle image before the name */}
-                  <span className="h-12 w-12 rounded-full">
-                    <img src={UserOne} alt="User" />
-                  </span>
-                  <p className="text-black dark:text-white">{member.name}</p>
-                </div>
-                <div className="p-2.5 text-center xl:p-5">
-                  <p className="text-black dark:text-white">{member.phone}</p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">{member.gender}</p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">
-                    ${member.personalfee}
-                  </p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">
-                    ${member.trainingfee}
-                  </p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">
-                    {member.joiningdate}
-                  </p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">{member.feeDate}</p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">{member.cnic}</p>
-                </div>
-              </div>
-            ))}
-            {membersData.map((member) => (
-              <div className="grid grid-cols-2 sm:grid-cols-10 rounded-sm h-full">
-                <div className="p-2.5 xl:p-5">
-                  <p className="text-black dark:text-white">{member.id}</p>
-                </div>
-                <div className="p-2.5 flex items-center gap-4 xl:p-5 col-span-2">
-                  {/* Add the circle image before the name */}
-                  <span className="h-12 w-12 rounded-full">
-                    <img src={UserOne} alt="User" />
-                  </span>
-                  <p className="text-black dark:text-white">{member.name}</p>
-                </div>
-                <div className="p-2.5 text-center xl:p-5">
-                  <p className="text-black dark:text-white">{member.phone}</p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">{member.gender}</p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">
-                    ${member.personalfee}
-                  </p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">
-                    ${member.trainingfee}
-                  </p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">
-                    {member.joiningdate}
-                  </p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">{member.feeDate}</p>
-                </div>
-                <div className="hidden p-2.5 text-center sm:block xl:p-5">
-                  <p className="text-black dark:text-white">{member.cnic}</p>
-                </div>
-              </div>
-            ))}
+            {members && members.length > 0 && (
+              <tbody>
+                {members.map((member) => (
+                  <tr
+                    key={member.id}
+                    className="bg-white border-b dark:bg-meta-4 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                  >
+                    <td className="p-4">
+                      <p className="text-black dark:text-white">
+                        {staff ? member.staff_id : member.client_id}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4 flex items-center gap-3">
+                      <img
+                        className="h-12 w-12 rounded-lg object-contain"
+                        width={50}
+                        src={
+                          member.image
+                            ? `http://localhost:8080/${member.image}`
+                            : defaultImage
+                        }
+                        alt="User"
+                      />
+                      <div>
+                        <p className="text-black dark:text-white mb-2">
+                          {member.name}
+                        </p>
+                        <span
+                          className={`rounded-full ${
+                            !staff
+                              ? `${
+                                  member.status === 'archived'
+                                    ? 'bg-stroke dark:bg-boxdark'
+                                    : ''
+                                } ${
+                                  member.status === 'active'
+                                    ? 'bg-meta-3/30 dark:text-white'
+                                    : ''
+                                } ${
+                                  member.status === 'inactive'
+                                    ? 'bg-meta-1/20 dark:bg-meta-1/40 dark:text-white'
+                                    : ''
+                                }`
+                              : 'bg-stroke dark:bg-boxdark'
+                          } px-2 py-1`}
+                        >
+                          {capitalize(
+                            staff ? (member as Staff).role : member.status,
+                          )}
+                        </span>
+                      </div>
+                    </td>
+                    {staff && (
+                      <td className="px-6 py-4">
+                        <p className="text-black dark:text-white">
+                          {JSON.parse(member.attendance)?.status && (
+                            <span
+                              className={`mr-2 rounded-full ${`${
+                                JSON.parse(member.attendance)?.status === 'late'
+                                  ? 'bg-stroke dark:bg-boxdark'
+                                  : ''
+                              } ${
+                                JSON.parse(member.attendance)?.status ===
+                                'present'
+                                  ? 'bg-meta-3/30 dark:text-white'
+                                  : ''
+                              } ${
+                                JSON.parse(member.attendance)?.status ===
+                                'absent'
+                                  ? 'bg-meta-1/20 dark:bg-meta-1/40 dark:text-white'
+                                  : ''
+                              }`} px-2 py-1`}
+                            >
+                              {capitalize(
+                                JSON.parse(member.attendance)?.status,
+                              )}
+                            </span>
+                          )}
+                        </p>
+                      </td>
+                    )}
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
+                        {capitalize(member.gender)}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
+                        {staff
+                          ? member?.locker_number || 'N/A'
+                          : member.joining_date
+                          ? moment(member.joining_date).format('YYYY-MM-DD')
+                          : 'N/A'}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
+                        {staff
+                          ? (member as Staff)?.fee
+                            ? `PKR ${(member as Staff).fee}/-`
+                            : 'N/A'
+                          : member.fee_date
+                          ? moment(member.fee_date).format('YYYY-MM-DD')
+                          : 'N/A'}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
+                        {member.phone || 'N/A'}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4 sticky right-0 bg-gray dark:bg-strokedark">
+                      <div className="w-full flex justify-start gap-2">
+                        <button
+                          className="px-3 border border-primary bg-primary bg-opacity-20 text-primary rounded hover:bg-opacity-30 transition-colors duration-300"
+                          onClick={() => openViewModal(member)}
+                        >
+                          View
+                        </button>
+                        {actions && (
+                          <>
+                            <button
+                              onClick={() => handleEditClick(member)}
+                              className="px-3 border border-blue-500 bg-blue-500 bg-opacity-20 text-blue-500 rounded hover:bg-opacity-30 transition-colors duration-300"
+                            >
+                              Edit
+                            </button>
+                            {staff &&
+                              (!JSON.parse(member.attendance)?.status ||
+                              JSON.parse(member.attendance)?.status ===
+                                'absent' ? (
+                                <button
+                                  onClick={() =>
+                                    handleMarkAttendance(member, 'checkin')
+                                  }
+                                  className="flex items-center gap-2 px-3 border border-success bg-success bg-opacity-20 text-success rounded hover:bg-opacity-30 transition-colors duration-300"
+                                >
+                                  <FaCheck /> Check In
+                                </button>
+                              ) : (
+                                staff &&
+                                !JSON.parse(member.attendance)?.checkout_at && (
+                                  <button
+                                    onClick={() =>
+                                      handleMarkAttendance(member, 'checkout')
+                                    }
+                                    className="flex items-center gap-2 px-3 border border-red-500 bg-red-500 bg-opacity-20 text-red-500 rounded hover:bg-opacity-30 transition-colors duration-300"
+                                  >
+                                    <FaCheck /> Check out
+                                  </button>
+                                )
+                              ))}
+                            {user.role === 'admin' && member.status === 'active' && (
+                              <button
+                                onClick={() => handleDeleteClick(member)}
+                                className="px-3 border border-red-500 bg-red-500 bg-opacity-20 text-red-500 rounded hover:bg-opacity-30 transition-colors duration-300"
+                              >
+                                Archive
+                              </button>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </>
         )}
-      </div>
+      </table>
+
+      {!members?.length && (
+        <div className="h-100 w-full flex justify-center items-center">
+          No Data
+        </div>
+      )}
+
+      <ViewMemberModal
+        isOpen={isViewModalOpen}
+        onClose={closeViewModal}
+        member={selectedMember}
+      />
     </div>
   );
 };

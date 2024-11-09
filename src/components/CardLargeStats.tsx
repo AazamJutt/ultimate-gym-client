@@ -5,13 +5,13 @@ interface CardLargeStatsProps {
   icon: React.ReactNode;
   title: string;
   total: number;
-  actionLink: string;
+  onClick: () => void;
 }
 const CardLargeStats: React.FC<CardLargeStatsProps> = ({
   icon,
   title,
   total,
-  actionLink,
+  onClick,
 }) => {
   return (
     <div className="rounded-sm border border-stroke bg-white py-6 px-7.5 shadow-default dark:border-strokedark dark:bg-boxdark">
@@ -19,13 +19,15 @@ const CardLargeStats: React.FC<CardLargeStatsProps> = ({
       <div className="flex gap-4 items-center flex-col">
         {icon}
         <div className="text-lg font-bold">{total}</div>
-        {actionLink && (
-          <Link
-            to={actionLink}
-            className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-10 text-center font-medium text-white hover:bg-opacity-90 lg:px-8 xl:px-10"
+        {onClick && (
+          <button
+            type="button"
+            disabled={!total}
+            onClick={onClick}
+            className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-10 text-center font-medium text-white disabled:cursor-not-allowed disabled:bg-strokedark hover:bg-opacity-90 lg:px-8 xl:px-10"
           >
             View All
-          </Link>
+          </button>
         )}
       </div>
     </div>

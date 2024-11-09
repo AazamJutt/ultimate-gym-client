@@ -213,3 +213,10 @@ span.flatpickr-weekday,
 [x-cloak] {
   display: none !important;
 }
+
+@media print {
+  @page {
+    size: 120mm 170mm;
+    margin: 10mm;
+  }
+}

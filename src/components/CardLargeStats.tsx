@@ -24,7 +24,7 @@ const CardLargeStats: React.FC<CardLargeStatsProps> = ({
             type="button"
             disabled={!total}
             onClick={onClick}
-            className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-10 text-center font-medium text-white disabled:cursor-not-allowed disabled:bg-strokedark hover:bg-opacity-90 lg:px-8 xl:px-10"
+            className="inline-flex items-center justify-center rounded-full bg-primary py-4 px-10 text-center font-medium text-white disabled:cursor-not-allowed disabled:bg-stroke dark:disabled:bg-strokedark hover:bg-opacity-90 lg:px-8 xl:px-10"
           >
             View All
           </button>

@@ -4,4 +4,5 @@ export interface User {
   password: string;
   created_at?: string;
   role: string;
+  status: 'active' | 'deleted';
 }

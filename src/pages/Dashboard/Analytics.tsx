@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { HiUserGroup } from 'react-icons/hi2';
 import { MdClose } from 'react-icons/md';
 import { PiFingerprintBold } from 'react-icons/pi';
@@ -16,6 +16,10 @@ import {
   useGetDashboardDataQuery,
   useGetMemberAnalyticsdDataQuery,
 } from '../../services/dashboard.service';
+import { useGetSettingsQuery } from '../../services/setting.service';
+import { Setting } from '../../types/Setting';
+import { useDeacticatePastDueMutation } from '../../services/membership.service';
+import { toast } from 'react-toastify';
 
 const Analytics: React.FC = () => {
   const user = useSelector((state: RootState) => state.auth.user);
@@ -28,10 +32,32 @@ const Analytics: React.FC = () => {
   });
   const [viewMembers, setViewMembers] = useState('');
   const [invoiceData, setInvoiceData] = useState();
+  const { data: settings } = useGetSettingsQuery();
+  const [deacticatePastDue] = useDeacticatePastDueMutation();
+
   const { data: memberAnalytics } = useGetMemberAnalyticsdDataQuery({
     skip: !user,
   });
-
+  const deactivate = async () => {
+    try {
+      const response = await deacticatePastDue({});
+      if (response?.data?.message) {
+        toast.info(response.data.message);
+      }
+    } catch (e) {
+      console.error('Failed to deactivate past due members');
+    }
+  };
+  useEffect(() => {
+    if (settings) {
+      const autoDeactivateMember = settings?.data.find(
+        (s: Setting) => s.key === 'autoDeactivateMember',
+      );
+      if (autoDeactivateMember?.value === "Yes") {
+        deactivate();
+      }
+    }
+  }, [settings]);
   const dashboardData = dashboard?.data;
   return !user || !dashboard ? (
     <div>Loading...</div>

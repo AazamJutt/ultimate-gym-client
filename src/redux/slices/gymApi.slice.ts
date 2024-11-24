@@ -18,6 +18,7 @@ const baseQuery = fetchBaseQuery({
 export const ultimateGymApiSlice = createApi({
   reducerPath: 'apiSlice',
   tagTypes: [
+    'Settings',
     'Dashboard',
     'Members',
     'Membership',

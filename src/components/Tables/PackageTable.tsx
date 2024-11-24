@@ -8,6 +8,8 @@ import {
 } from '../../services/package.service';
 import { useSelector } from 'react-redux';
 import { RootState } from '../../redux/store';
+import { confirmDialog } from 'primereact/confirmdialog';
+import ConfirmDialogModal from '../ConfirmDialog';
 // import ViewPackageModal from '../Modals/ViewPackageModal';
 
 const SkeletonLoader = () => {
@@ -34,18 +36,30 @@ const PackageTable = ({
   const user = useSelector((state: RootState) => state.auth.user);
 
   const handleDeleteClick = (pkg: Package) => {
-    if (window.confirm('Are you sure you want to delete this package?')) {
-      deactivatePackage(pkg.id.toString());
-    }
+    confirmDialog({
+      message: 'Are you sure you want to delete this package?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept: async () => {
+        deactivatePackage(pkg.id.toString());
+      },
+    });
   };
 
   const handleActivateClick = (pkg: Package) => {
-    if (window.confirm('Are you sure you want to activate this package?')) {
-      updatePackage({
-        id: pkg.id.toString(),
-        packageData: { status: 'active' },
-      });
-    }
+    confirmDialog({
+      message: 'Are you sure you want to activate this package?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept: async () => {
+        updatePackage({
+          id: pkg.id.toString(),
+          packageData: { status: 'active' },
+        });
+      },
+    });
   };
 
   return (
@@ -176,12 +190,6 @@ const PackageTable = ({
           No Data
         </div>
       )}
-
-      {/* <ViewPackageModal
-        isOpen={isViewModalOpen}
-        onClose={closeViewModal}
-        pkg={selectedPackage}
-      /> */}
     </div>
   );
 };

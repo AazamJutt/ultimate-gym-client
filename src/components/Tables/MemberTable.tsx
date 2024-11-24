@@ -10,13 +10,16 @@ import { Client } from '../../types/Client';
 import { Staff } from '../../types/staff';
 import { capitalize } from '../../utils/helpers';
 import ViewMemberModal from '../Modals/ViewMemberModal';
-import { FaCheck } from 'react-icons/fa';
+import { FaCheck, FaLock, FaUnlock } from 'react-icons/fa';
 import { useMarkAttendanceMutation } from '../../services/attendance.service';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
 import { dashboardApi } from '../../services/dashboard.service';
-import { staffApi } from '../../services/staff.service';
+import { staffApi, useDeleteStaffMutation } from '../../services/staff.service';
 import { RootState } from '../../redux/store';
+import { confirmDialog } from 'primereact/confirmdialog';
+import ConfirmDialogModal from '../ConfirmDialog';
+import { Attendance } from '../../types/attendance';
 
 const SkeletonLoader = () => {
   return (
@@ -32,6 +35,8 @@ interface MemberTableProps {
   staff?: boolean;
   refetch: () => void;
   actions?: boolean;
+  handleAssignLocker?: any;
+  handleUnassignLocker?: any;
 }
 
 const MemberTable = ({
@@ -40,12 +45,15 @@ const MemberTable = ({
   staff,
   refetch,
   actions = true,
+  handleAssignLocker,
+  handleUnassignLocker,
 }: MemberTableProps) => {
   const navigate = useNavigate();
   const user = useSelector((state: RootState) => state.auth.user);
 
   const dispatch = useDispatch();
   const [deleteClient] = useDeleteClientMutation();
+  const [deleteStaff] = useDeleteStaffMutation();
   const [selectedMember, setSelectedMember] = useState<Client | Staff | null>(
     null,
   );
@@ -71,24 +79,36 @@ const MemberTable = ({
     );
   };
 
-  const handleDeleteClick = (member: Client) => {
-    if (window.confirm('Are you sure you want to delete this member?')) {
-      deleteClient(member?.client_id ?? '');
-    }
+  const handleDeleteClick = (member: any) => {
+    confirmDialog({
+      message: 'Are you sure you want to delete this member?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept: async () => {
+        staff
+          ? deleteStaff(member?.staff_id ?? '')
+          : deleteClient(member?.client_id ?? '');
+      },
+    });
   };
 
   const handleMarkAttendance = async (
     member: Client | Staff,
-    type: 'checkin' | 'checkout',
-  ): void => {
+    type: 'checkin' | 'checkout' | 'absent',
+  ) => {
     try {
       if (!member.member_id) return;
-      const attendanceData = {
+      const attendanceData: Attendance = {
         member_id: member.member_id,
         date: moment().format('YYYY-MM-DD'),
-        checkout_at:
-          type === 'checkout' ? moment().format('YYYY-MM-DD HH:mm:ss') : null,
+        status: type === 'absent' ? 'absent' : 'present',
       };
+      if (type === 'checkin') {
+        attendanceData.checkin_at = moment().format('HH:mm:ss');
+      } else if (type === 'checkout') {
+        attendanceData.checkout_at = moment().format('HH:mm:ss');
+      }
       await markAttendance(attendanceData);
       dispatch(dashboardApi.util.invalidateTags(['Dashboard']));
       dispatch(clientApi.util.invalidateTags(['Client']));
@@ -322,14 +342,31 @@ const MemberTable = ({
                                   </button>
                                 )
                               ))}
-                            {user.role === 'admin' && member.status === 'active' && (
-                              <button
-                                onClick={() => handleDeleteClick(member)}
-                                className="px-3 border border-red-500 bg-red-500 bg-opacity-20 text-red-500 rounded hover:bg-opacity-30 transition-colors duration-300"
-                              >
-                                Archive
-                              </button>
-                            )}
+                            {staff &&
+                              (member?.locker_number ? (
+                                <button
+                                  onClick={() => handleUnassignLocker(member)}
+                                  className="flex items-center gap-2 px-3 border border-danger bg-danger bg-opacity-20 text-danger rounded hover:bg-opacity-30 transition-colors duration-300"
+                                >
+                                  <FaUnlock /> Unassign Locker
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleAssignLocker(member)}
+                                  className="flex items-center gap-2 px-3 border border-success bg-success bg-opacity-20 text-success rounded hover:bg-opacity-30 transition-colors duration-300"
+                                >
+                                  <FaLock /> Assign Locker
+                                </button>
+                              ))}
+                            {user.role === 'admin' &&
+                              member.status === 'active' && (
+                                <button
+                                  onClick={() => handleDeleteClick(member)}
+                                  className="px-3 border border-red-500 bg-red-500 bg-opacity-20 text-red-500 rounded hover:bg-opacity-30 transition-colors duration-300"
+                                >
+                                  Archive
+                                </button>
+                              )}
                           </>
                         )}
                       </div>

@@ -5,6 +5,12 @@ import { User } from '../types/User';
 
 export const userApi = ultimateGymApiSlice.injectEndpoints({
   endpoints: (builder) => ({
+    verifyToken: builder.query<ApiResponse, void>({
+      query: () => ({
+        url: '/users/verifyToken',
+        method: 'GET',
+      }),
+    }),
     login: builder.mutation<ApiResponse, Partial<User>>({
       query: (credentials) => ({
         url: '/users/login',
@@ -38,10 +44,7 @@ export const userApi = ultimateGymApiSlice.injectEndpoints({
       }),
       providesTags: ['User'],
     }),
-    deleteUser: builder.mutation<
-      ApiResponse,
-      number
-    >({
+    deleteUser: builder.mutation<ApiResponse, number>({
       query: (id) => ({
         url: `/users/${id}`,
         method: 'DELETE',
@@ -52,9 +55,10 @@ export const userApi = ultimateGymApiSlice.injectEndpoints({
 });
 
 export const {
+  useLazyVerifyTokenQuery,
   useLoginMutation,
   useUpdateUserMutation,
   useCreateUserMutation,
   useGetUsersListQuery,
-  useDeleteUserMutation
+  useDeleteUserMutation,
 } = userApi;

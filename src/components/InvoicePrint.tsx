@@ -1,5 +1,5 @@
 // InvoicePrint.js
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { Invoice } from '../types/Invoice';
 import { useReactToPrint } from 'react-to-print';
 import Logo from '../images/logo/logo-dark.png';
@@ -16,6 +16,18 @@ const InvoicePrint = ({
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({ contentRef });
+  useEffect(() => {
+    const handleEsc = (event: any) => {
+      if (event.key === 'Escape') {
+        setInvoiceData(null);
+      }
+    };
+    window.addEventListener('keydown', handleEsc);
+
+    return () => {
+      window.removeEventListener('keydown', handleEsc);
+    };
+  }, []);
   return (
     <div>
       <div className="flex justify-between mb-5">
@@ -59,7 +71,7 @@ const InvoicePrint = ({
           <div className="flex justify-between">
             <span className="text-lg font-bold">RECEIPT</span>
             <span>{moment(invoiceData.invoice_date).format('MMM D YYYY')}</span>
-            </div>
+          </div>
           <div className="flex justify-between">
             <span className="font-medium w-50 text-gray-800">
               Invoice Number:
@@ -99,6 +111,16 @@ const InvoicePrint = ({
               Personal Fee:
             </span>{' '}
             Rs. {invoiceData.personal_fee}/-
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium w-50 text-gray-800">
+              Registration Fee:
+            </span>{' '}
+            Rs. {invoiceData.registration_fee}/-
+          </div>
+          <div className="flex justify-between">
+            <span className="font-medium w-50 text-gray-800">Locker Fee:</span>{' '}
+            Rs. {invoiceData.locker_fee}/-
           </div>
           <div className="flex justify-between">
             <span className="font-medium w-50 text-gray-800">

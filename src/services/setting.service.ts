@@ -7,20 +7,23 @@ export const settingsApi = ultimateGymApiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getSettings: builder.query<ApiResponse, void>({
       query: () => `/settings`,
-      providesTags: () => ['Invoice'],
+      providesTags: () => ['Settings'],
     }),
     updateSettings: builder.mutation<ApiResponse, Partial<Setting[]>>({
       query: (settings: Setting[]) => ({
         url: `/settings`,
         method: 'PUT',
-        body: {settings},
+        body: { settings },
       }),
-      invalidatesTags: ['Invoice', 'Dashboard', 'Membership'],
+      invalidatesTags: [
+        'Settings',
+        'Dashboard',
+        'Invoice',
+        'MemberAnalytics',
+        'Membership',
+      ],
     }),
   }),
 });
 
-export const {
-  useGetSettingsQuery,
-  useUpdateSettingsMutation
-} = settingsApi;
+export const { useGetSettingsQuery, useUpdateSettingsMutation } = settingsApi;

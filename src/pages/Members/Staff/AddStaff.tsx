@@ -18,7 +18,6 @@ const AddStaff = () => {
     cnic: '',
     joining_date: '',
     address: '',
-    locker_number: '',
     blood_group: '',
     dob: '',
     fee: 0,

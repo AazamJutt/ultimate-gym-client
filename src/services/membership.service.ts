@@ -77,6 +77,13 @@ export const membershipApi = ultimateGymApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Membership', 'Client', 'Dashboard', 'Invoice'],
     }),
+    deacticatePastDue: builder.mutation<void, {}>({
+      query: () => ({
+        url: `/memberships/deacticatePastDue`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['Membership', 'Client', 'Dashboard', 'Invoice'],
+    }),
   }),
 });
 
@@ -88,4 +95,5 @@ export const {
   useUpdateMembershipMutation,
   useDeleteMembershipMutation,
   useAddMembershipTransactionMutation,
+  useDeacticatePastDueMutation,
 } = membershipApi;

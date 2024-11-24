@@ -7,6 +7,11 @@ import { useGetPackagesQuery } from '../../services/package.service';
 import { useGetStaffsQuery } from '../../services/staff.service';
 import { Membership } from '../../types/Membership';
 import { Package } from '../../types/Package';
+import { useGetSettingsQuery } from '../../services/setting.service';
+import { Setting } from '../../types/Setting';
+import { useGetLockersQuery } from '../../services/locker.service';
+import { useSelector } from 'react-redux';
+import { RootState } from '../../redux/store';
 
 interface MembershipFormProps {
   initialValues?: Membership; // Initial values for editing
@@ -17,8 +22,6 @@ interface MembershipFormProps {
   name?: string;
   formik?: any;
   isSubForm?: boolean;
-  locker_fee?: number;
-  registration_fee?: number;
 }
 
 const MembershipForm = ({
@@ -30,8 +33,6 @@ const MembershipForm = ({
   name,
   formik,
   isSubForm = false,
-  locker_fee,
-  registration_fee,
 }: MembershipFormProps) => {
   const { data: trainers } = useGetStaffsQuery({
     page: 1,
@@ -44,10 +45,38 @@ const MembershipForm = ({
     filter: { type: 'nutritionist', status: 'active' },
   });
   const { data: packages } = useGetPackagesQuery({ status: 'active' });
-  const [lockerFee, setLockerFee] = useState(locker_fee);
-  useEffect(() => {
-    setLockerFee(locker_fee);
-  }, [locker_fee]);
+  const { data: settings } = useGetSettingsQuery();
+  const user = useSelector((state: RootState) => state.auth.user);
+
+  const [changeLocker, setChangeLocker] = useState(false);
+  console.log(settings);
+  const registration_fee =
+    settings?.data.find((setting: Setting) => setting.key === 'registrationFee')
+      ?.value || 0;
+  const locker_fee =
+    settings?.data.find((setting: Setting) => setting.key === 'lockerFee')
+      ?.value || 0;
+  const canEditRegistrationFee =
+    user?.role === 'admin' ||
+    settings?.data.find(
+      (setting: Setting) => setting.key === 'staffCanEditRegistrationFee',
+    )?.value === 'Yes';
+  const canEditTrainingFee =
+    user?.role === 'admin' ||
+    settings?.data.find(
+      (setting: Setting) => setting.key === 'staffCanEditTrainingFee',
+    )?.value === 'Yes';
+  const canEditLockerFee =
+    user?.role === 'admin' ||
+    settings?.data.find(
+      (setting: Setting) => setting.key === 'staffCanEditLockerFee',
+    )?.value === 'Yes';
+  const canEditMembershipFee =
+    user?.role === 'admin' ||
+    settings?.data.find(
+      (setting: Setting) => setting.key === 'staffCanEditMembershipFee',
+    )?.value === 'Yes';
+  const { data: lockers } = useGetLockersQuery({ assigned: false });
   // const [search, setSearch] = useState('');
 
   // const { data: members } = useGetClientsQuery({
@@ -70,6 +99,11 @@ const MembershipForm = ({
         nutritionist_id: initialValues?.nutritionist_id || null,
         training_fee: initialValues?.training_fee || 0,
         personal_fee: initialValues?.personal_fee || 0,
+        locker_number: initialValues?.locker_number || '',
+        locker_fee: initialValues?.locker_fee || 0,
+        registration_fee: isEditing
+          ? 0
+          : initialValues?.registration_fee || registration_fee || 0,
       },
       validationSchema: Yup.object({
         status: Yup.string(),
@@ -86,6 +120,11 @@ const MembershipForm = ({
         personal_fee: Yup.number()
           .min(0)
           .required('Membership fee is required'),
+        locker_number: Yup.string().nullable(),
+        locker_fee: Yup.number().min(0).required('Locker fee is required'),
+        registration_fee: Yup.number()
+          .min(0)
+          .required('Registration fee is required'),
       }),
       onSubmit: async (values: Membership) => {
         try {
@@ -98,6 +137,11 @@ const MembershipForm = ({
   }
   const values = name ? formik.values[name] : formik.values;
   const errors = name ? formik.errors[name] : formik.errors;
+  const handleRemoveLocker = () => {
+    formik.setFieldValue(name ? `${name}.locker_number` : 'locker_number', '');
+    formik.setFieldValue(name ? `${name}.locker_fee` : 'locker_fee', 0);
+    setChangeLocker(true);
+  };
   useEffect(() => {
     const selectedPackageId = values.package_id;
     // Assuming you want to set the fee_date based on the selected package
@@ -117,6 +161,20 @@ const MembershipForm = ({
     formik.validateForm();
   }, [values.package_id]);
 
+  const handleLockerChange = (e: any) => {
+    const selectedLockerNumber = e.target.value;
+    formik.handleChange(e);
+    // Assuming you want to set the trainer_id in formik
+    formik.setFieldValue(
+      name ? `${name}.locker_fee` : 'locker_fee',
+      selectedLockerNumber ? locker_fee : 0,
+    );
+    formik.setFieldValue(
+      name ? `${name}.locker_number` : 'locker_number',
+      selectedLockerNumber,
+    );
+    formik.validateForm();
+  };
   const handleTrainerChange = (e: any) => {
     const selectedTrainerId = e.target.value;
     formik.handleChange(e);
@@ -264,6 +322,49 @@ const MembershipForm = ({
                     </select>
                   </div>
                 </div>
+                <div className="w-full mb-3 ">
+                  <label className="mb-2.5 block text-black dark:text-white">
+                    Locker
+                  </label>
+                  {!isEditing ||
+                  changeLocker ||
+                  (isEditing && !initialValues?.locker_number) ? (
+                    <select
+                      name={name ? `${name}.locker_number` : 'locker_number'}
+                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                      onChange={handleLockerChange}
+                      value={values.locker_number}
+                    >
+                      <option value="">Select Locker</option>
+                      {lockers?.data?.map((locker) => (
+                        <option key={locker.id} value={locker.locker_number}>
+                          {locker.locker_number}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <div>
+                      <input
+                        type="string"
+                        name={name ? `${name}.locker_number` : 'locker_number'}
+                        disabled
+                        value={values.locker_number}
+                        className="w-full rounded border-[0.5px] bg-stroke border-black-2 border dark:border-form-strokedark py-3 px-5 text-black outline-none transition dark:bg-strokedark dark:text-white"
+                      />
+                      <button
+                        type="button"
+                        className="text-danger hover:underline"
+                        onClick={handleRemoveLocker}
+                      >
+                        Remove Locker
+                      </button>
+                    </div>
+                  )}
+                  <span>Locker Fee is PKR {locker_fee}/-</span>
+                  {errors?.locker_number ? (
+                    <div className="text-red-500">{errors?.settings}</div>
+                  ) : null}
+                </div>
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   {/* Personal Fee */}
                   <div className="w-full xl:w-1/2">
@@ -277,6 +378,7 @@ const MembershipForm = ({
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       onChange={formik.handleChange}
                       value={values.personal_fee}
+                      disabled={!canEditMembershipFee}
                     />
                     {errors?.personal_fee ? (
                       <div className="text-red-500">{errors.personal_fee}</div>
@@ -294,6 +396,7 @@ const MembershipForm = ({
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       onChange={formik.handleChange}
                       value={values.training_fee}
+                      disabled={!canEditTrainingFee}
                     />
                     {errors?.training_fee ? (
                       <div className="text-red-500">{errors.training_fee}</div>
@@ -302,21 +405,25 @@ const MembershipForm = ({
                 </div>
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
                   {/* Personal Fee */}
-                  <div className="w-full xl:w-1/2">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Registration Fee
-                    </label>
-                    <input
-                      type="number"
-                      placeholder="Enter registration fee"
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      value={registration_fee}
-                      disabled
-                    />
-                    {errors?.personal_fee ? (
-                      <div className="text-red-500">{errors.personal_fee}</div>
-                    ) : null}
-                  </div>
+                  {!isEditing && (
+                    <div className="w-full xl:w-1/2">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Registration Fee
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="Enter registration fee"
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        value={registration_fee}
+                        disabled={!canEditRegistrationFee}
+                      />
+                      {errors?.registration_fee ? (
+                        <div className="text-red-500">
+                          {errors.registration_fee}
+                        </div>
+                      ) : null}
+                    </div>
+                  )}
                   {/* Training Fee */}
                   <div className="w-full xl:w-1/2">
                     <label className="mb-2.5 block text-black dark:text-white">
@@ -324,18 +431,23 @@ const MembershipForm = ({
                     </label>
                     <input
                       type="number"
-                      disabled
+                      disabled={!canEditLockerFee}
                       placeholder="Enter locker fee"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      onChange={(e) => setLockerFee(Number(e.target.value))}
-                      value={lockerFee}
+                      onChange={formik.handleChange}
+                      value={values.locker_fee}
                     />
-                    {errors?.training_fee ? (
-                      <div className="text-red-500">{errors.training_fee}</div>
+                    {errors?.locker_fee ? (
+                      <div className="text-red-500">{errors.locker_fee}</div>
                     ) : null}
                   </div>
                 </div>
-                Total Fee: PKR {values.personal_fee + values.training_fee + registration_fee + lockerFee}/-
+                Total Fee: PKR{' '}
+                {values.personal_fee +
+                  values.training_fee +
+                  (!isEditing ? registration_fee : 0) +
+                  (values.locker_number ? locker_fee : 0)}
+                /-
                 {!isSubForm && (
                   <button
                     type="submit"

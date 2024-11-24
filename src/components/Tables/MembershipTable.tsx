@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { confirmDialog } from 'primereact/confirmdialog';
 import { useState } from 'react';
 import { FaCheck, FaFileInvoice } from 'react-icons/fa';
 import { useDispatch } from 'react-redux';
@@ -12,9 +13,9 @@ import { useDeleteMembershipMutation } from '../../services/membership.service';
 import { Client } from '../../types/Client';
 import { Invoice } from '../../types/Invoice';
 import { capitalize } from '../../utils/helpers';
-import ViewMembershipModal from '../Modals/ViewMembershipModal';
 import InvoicePrint from '../InvoicePrint';
-import ConfirmDialog from '../ConfirmDialog';
+import ViewMembershipModal from '../Modals/ViewMembershipModal';
+import ConfirmDialogModal from '../ConfirmDialog';
 
 const SkeletonLoader = () => {
   return (
@@ -51,16 +52,10 @@ const MembershipTable = ({
 }: MembershipTableProps) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [confirmVisible, setConfirmVisible] = useState(false);
-  const [onOk, setOnOk] = useState(null);
   const [deleteMembership] = useDeleteMembershipMutation();
   const [selectedMembership, setSelectedMembership] = useState<any | null>(
     null,
   );
-  const handleCancel = () => {
-    setConfirmVisible(false);
-    setOnOk(null);
-  };
 
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
   const [markAttendance] = useMarkAttendanceMutation();
@@ -80,14 +75,20 @@ const MembershipTable = ({
   };
 
   const handleDeactivateClick = async (membership: any) => {
-    setOnOk(async () => {
-      const response = await deleteMembership(membership?.id ?? '');
-      if (response?.data?.success) {
-        refetch();
-        toast.success('Membership deactivated successfully');
-      } else {
-        toast.error(response?.data?.details || 'Something went wrong');
-      }
+    confirmDialog({
+      message: 'Are you sure you want to deactivete this memebership?',
+      header: 'Confirmation',
+      icon: 'pi pi-exclamation-triangle',
+      defaultFocus: 'accept',
+      accept: async () => {
+        const response = await deleteMembership(membership?.id ?? '');
+        if (response?.data?.success) {
+          refetch();
+          toast.success('Membership deactivated successfully');
+        } else {
+          toast.error(response?.data?.details || 'Something went wrong');
+        }
+      },
     });
   };
 
@@ -156,6 +157,13 @@ const MembershipTable = ({
                dark:bg-meta-4 px-6 py-3"
               >
                 <p className="text-black dark:text-white">Training Fee</p>
+              </th>
+              <th
+                scope="col"
+                className="bg-gray-500 min-w-[135px]
+               dark:bg-meta-4 px-6 py-3"
+              >
+                <p className="text-black dark:text-white">Locker Fee</p>
               </th>
               <th
                 scope="col"
@@ -301,6 +309,11 @@ const MembershipTable = ({
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">
+                        Rs. {membership.locker_fee}/-
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
                         {membership.package_name}
                       </p>
                     </td>
@@ -347,7 +360,7 @@ const MembershipTable = ({
                         {membership.status === 'active' && (
                           <button
                             onClick={() => handleCreateInvoice(membership)}
-                            className="px-3 border text-boxdark border-secondary bg-secondary text-secondary rounded"
+                            className="px-3 border text-black-2 border-secondary bg-secondary rounded"
                           >
                             Add Invoice
                           </button>
@@ -388,14 +401,6 @@ const MembershipTable = ({
           )}
         </div>
       </div>
-      {onOk && (
-        <ConfirmDialog
-          visible={confirmVisible}
-          onOK={onOk}
-          onCancel={handleCancel}
-          action={'Deactivate this member'}
-        />
-      )}
     </div>
   );
 };

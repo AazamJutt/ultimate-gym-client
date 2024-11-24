@@ -117,7 +117,9 @@ span.flatpickr-weekday,
 }
 .flatpickr-day.inRange {
   @apply dark:!shadow-7;
-  box-shadow: -5px 0 0 #EFF4FB, 5px 0 0 #EFF4FB;
+  box-shadow:
+    -5px 0 0 #eff4fb,
+    5px 0 0 #eff4fb;
 }
 .flatpickr-day.inRange,
 .flatpickr-day.prevMonthDay.inRange,
@@ -219,4 +221,28 @@ span.flatpickr-weekday,
     size: 120mm 170mm;
     margin: 10mm;
   }
+}
+
+.p-dialog-mask {
+  @apply !bg-black !bg-opacity-50;
+  z-index: 10000 !important;
+}
+
+.p-dialog-title {
+  @apply !text-lg !font-bold;
+}
+
+.rdrCalendarWrapper,
+.rdrDateDisplayWrapper,
+.rdrStaticRange,
+.rdrDefinedRangesWrapper {
+  @apply bg-boxdark-2 border-strokedark border rounded !important;
+}
+.rdrStaticRangeLabel,
+.rdrDay {
+  @apply text-white hover:text-primary !important;
+}
+
+:is(.dark .dark\:bg-slate-800) {
+  @apply bg-meta-4 !important;
 }

@@ -8,12 +8,15 @@ import 'jsvectormap/dist/css/jsvectormap.css';
 import 'flatpickr/dist/flatpickr.min.css';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
+import { PrimeReactProvider } from 'primereact/api';
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <Router>
       <Provider store={store}>
-        <App />
+        <PrimeReactProvider>
+          <App />
+        </PrimeReactProvider>
       </Provider>
     </Router>
   </React.StrictMode>,

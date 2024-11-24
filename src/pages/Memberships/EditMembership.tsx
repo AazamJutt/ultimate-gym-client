@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import defaultImage from '../../images/user/user-03.png';
 import { useGetClientByIdQuery } from '../../services/client.service';
@@ -99,10 +99,18 @@ const EditMembership = () => {
             <p className="font-semibold">Phone:</p>
             <p>{member?.phone}</p>
           </div>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 mb-2">
             <p className="font-semibold">CNIC:</p>
             <p>{member?.cnic || 'N/A'}</p>
           </div>
+        <button type="button" className="text-primary">
+          <Link
+            className="hover:underline"
+            to={`/members/${membership.client_id}/edit`}
+          >
+            Edit Member Details
+          </Link>
+        </button>
         </div>
       </div>
 

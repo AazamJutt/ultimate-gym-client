@@ -21,7 +21,7 @@ interface ListProps {
 }
 
 const MembershipList = ({ listFilter }: ListProps) => {
-  let [searchParams] = useSearchParams();
+  let [searchParams, setSearchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<MembershipFilters>(
     listFilter || { status: '' },
@@ -124,8 +124,9 @@ const MembershipList = ({ listFilter }: ListProps) => {
             membership.invoice &&
             JSON.parse(membership.invoice).id.toString() === invoice_id,
         );
-        console.log(newMembership);
         if (newMembership) setInvoiceData(JSON.parse(newMembership.invoice!));
+        searchParams.delete('invoice_id');
+        setSearchParams(searchParams);
       }
     }
   }, [memberships, searchParams]);
@@ -240,6 +241,10 @@ const MembershipList = ({ listFilter }: ListProps) => {
         </div>
       </div>
 
+      <div className="px-1 py-3">
+        Showing {itemsPerPage * (currentPage - 1) || 1}-
+        {itemsPerPage * (currentPage - 1) + itemsPerPage} of {totalItems || 0}
+      </div>
       {/* Pass search, filter, and pagination as props to MemberTable */}
       <MembershipTable
         loading={loading}
@@ -266,10 +271,6 @@ const MembershipList = ({ listFilter }: ListProps) => {
               {index + 1}
             </button>
           ))}
-        </div>
-        <div>
-          Showing {itemsPerPage * (currentPage - 1) || 1}-
-          {itemsPerPage * (currentPage - 1) + itemsPerPage} of {totalItems || 0}
         </div>
         {/* Page Size Selector */}
         <div className="flex items-center gap-2 relative">
@@ -299,6 +300,7 @@ const MembershipList = ({ listFilter }: ListProps) => {
         <div className="bg-white dark:bg-strokedark p-8 rounded-lg shadow-xl text-black dark:text-white max-w-md w-full">
           {selectedMembership && (
             <InvoiceForm
+              enableReinitialize
               onCancel={handleCancelInvoice}
               onSubmit={handleSubmit}
               initialValues={{
@@ -308,11 +310,11 @@ const MembershipList = ({ listFilter }: ListProps) => {
                 package_name: selectedMembership.package_name,
                 nutritionist_id: selectedMembership?.nutritionist_id || null,
                 training_fee: selectedMembership?.training_fee,
+                registration_fee: selectedMembership?.registration_fee,
                 personal_fee: selectedMembership?.personal_fee,
+                locker_fee: selectedMembership?.locker_fee,
+                locker_number: selectedMembership?.locker_number || '',
                 client_id: selectedMembership.client_id,
-                reciever_id: '1',
-                reciever_name: 'Umer',
-                reciever_phone: '29348109483',
                 invoice_date: moment().format('YYYY-MM-DD'),
                 due_date: selectedMembership.fee_date,
                 payment_type: 'cash',

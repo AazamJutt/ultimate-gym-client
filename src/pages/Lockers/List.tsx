@@ -1,39 +1,29 @@
 import { useEffect, useState } from 'react';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
-import MembershipTable from '../../components/Tables/MembershipTable';
-import {
-  useCreateInvoiceMutation,
-  useGetInvoicesQuery,
-} from '../../services/invoice.service';
-import { useGetMembershipsQuery } from '../../services/membership.service';
+
+import LockersTable from '../../components/Tables/LockersTable';
+import { useGetLockersListQuery } from '../../services/locker.service';
 import { useGetPackagesQuery } from '../../services/package.service';
 import { useGetStaffsQuery } from '../../services/staff.service';
-import { Invoice } from '../../types/Invoice';
-import { Membership } from '../../types/Membership';
+import { Locker } from '../../types/Locker';
 import { MembershipFilters } from '../../types/MembershipFilters';
 import { Package } from '../../types/Package';
-import InvoicesTable from '../../components/Tables/InvoiceTable';
-import Datepicker from 'react-tailwindcss-datepicker';
-import moment from 'moment';
 
 interface ListProps {
   listFilter?: MembershipFilters;
 }
 
-const InvoicesList = ({ listFilter }: ListProps) => {
+const LockersList = ({ listFilter }: ListProps) => {
   let [searchParams] = useSearchParams();
   const [search, setSearch] = useState('');
   const [filter, setFilter] = useState<MembershipFilters>(
     listFilter || { status: '' },
   );
-  const [showInvoiceModal, setShowInvoiceModal] = useState(false);
-  const [createInvoice] = useCreateInvoiceMutation();
-  const [selectedInvoices, setSelectedInvoices] = useState<Invoice | null>(
-    null,
-  );
+  const [showLockerModal, setShowLockerModal] = useState(false);
+  //   const [createLocker] = useCreateLockerMutation();
+  const [selectedLockers, setSelectedLockers] = useState<Locker | null>(null);
 
   const { data: trainers } = useGetStaffsQuery({
     page: 1,
@@ -51,7 +41,7 @@ const InvoicesList = ({ listFilter }: ListProps) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page
   const [totalItems, setTotalItems] = useState(100); // Default items per page
-  const [invoiceData, setInvoiceData] = useState<Invoice | null>(null); // State for invoice data
+  const [LockerData, setLockerData] = useState<Locker | null>(null); // State for Locker data
 
   // Calculate total pages
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -60,9 +50,9 @@ const InvoicesList = ({ listFilter }: ListProps) => {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
-  const handleCancelInvoice = () => {
-    setShowInvoiceModal(false);
-    setSelectedInvoices(null);
+  const handleCancelLocker = () => {
+    setShowLockerModal(false);
+    setSelectedLockers(null);
   };
   // Handle items per page change
   const handleItemsPerPageChange = (
@@ -77,11 +67,10 @@ const InvoicesList = ({ listFilter }: ListProps) => {
     error,
     isLoading: loading,
     refetch,
-  } = useGetInvoicesQuery({
+  } = useGetLockersListQuery({
     page: currentPage,
     pageSize: itemsPerPage,
     search,
-    filter,
   });
 
   useEffect(() => {
@@ -97,51 +86,51 @@ const InvoicesList = ({ listFilter }: ListProps) => {
     }
   }, [memberships]);
 
-  const handleSubmit = async (values: Invoice) => {
-    try {
-      const { data: response } = await createInvoice(values);
-      if (response?.success) {
-        toast.success(`Invoice record added successfully`);
-        handleCancelInvoice();
-        if (response?.data) setInvoiceData(response?.data);
-        refetch();
-      } else toast.error(`Could not create Invoice`);
-    } catch (error) {
-      console.error(`Failed to create Package:`, error);
-      toast.error(`Failed to create Package:`, error?.message);
-    }
-  };
+  //   const handleSubmit = async (values: Locker) => {
+  //     try {
+  //       const { data: response } = await createLocker(values);
+  //       if (response?.success) {
+  //         toast.success(`Locker record added successfully`);
+  //         handleCancelLocker();
+  //         if (response?.data) setLockerData(response?.data);
+  //         refetch();
+  //       } else toast.error(`Could not create Locker`);
+  //     } catch (error) {
+  //       console.error(`Failed to create Package:`, error);
+  //       toast.error(`Failed to create Package:`, error?.message);
+  //     }
+  //   };
   useEffect(() => {
     refetch();
   }, []);
-  const handleCreateInvoice = (membership: Invoices) => {
-    setSelectedInvoices(membership);
-    setShowInvoiceModal(true);
+  const handleCreateLocker = (membership: Lockers) => {
+    setSelectedLockers(membership);
+    setShowLockerModal(true);
   };
 
   useEffect(() => {
     if (memberships?.data) {
-      const invoice_id = searchParams.get('invoice_id');
-      if (invoice_id) {
-        const newInvoices = memberships.data.find(
+      const Locker_id = searchParams.get('Locker_id');
+      if (Locker_id) {
+        const newLockers = memberships.data.find(
           (membership) =>
-            membership.invoice &&
-            JSON.parse(membership.invoice).id.toString() === invoice_id,
+            membership.Locker &&
+            JSON.parse(membership.Locker).id.toString() === Locker_id,
         );
-        console.log(newInvoices);
-        if (newInvoices) setInvoiceData(JSON.parse(newInvoices.invoice!));
+        console.log(newLockers);
+        if (newLockers) setLockerData(JSON.parse(newLockers.Locker!));
       }
     }
   }, [memberships, searchParams]);
   return (
     <>
-      <Breadcrumb pageName="All Invoices" />
+      <Breadcrumb pageName="All Lockers" />
 
       <div className="flex items-center justify-between gap-5 mb-4">
         {/* Search Bar */}
         <input
           type="text"
-          placeholder="Search invoices by member (name, phone, id)"
+          placeholder="Search lockers by member (name, phone, id)"
           className="w-100 rounded bg-white dark:bg-meta-4 border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
@@ -174,39 +163,14 @@ const InvoicesList = ({ listFilter }: ListProps) => {
             <IoIosArrowDown />
           </span>
         </div>
-        <div className="w-100 flex items-center gap-2 text-center relative">
-          <label className="text-sm text-gray-600 dark:text-gray-300">
-            Filter by Date:
-          </label>
-          <Datepicker
-            showFooter
-            toggleClassName="absolute bg-secondary rounded-r-lg text-black right-0 h-full px-3 text-gray-400 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
-            inputClassName="w-full appearance-none bg-white dark:bg-meta-4 rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-            value={{
-              startDate: filter?.startDate ? moment(filter?.startDate) : null,
-              endDate: filter?.endDate ? moment(filter?.endDate) : null,
-            }}
-            onChange={(newValue) => {
-              setFilter((prev: any) => ({
-                ...prev,
-                startDate: newValue?.startDate
-                  ? moment(newValue?.startDate).format('YYYY-MM-DD')
-                  : '',
-                endDate: newValue?.endDate
-                  ? moment(newValue?.endDate).format('YYYY-MM-DD')
-                  : '',
-              }));
-            }}
-            showShortcuts={true}
-          />
-        </div>
       </div>
+
       <div className="px-1 py-3">
         Showing {itemsPerPage * (currentPage - 1) || 1}-
         {itemsPerPage * (currentPage - 1) + itemsPerPage} of {totalItems || 0}
       </div>
       {/* Pass search, filter, and pagination as props to MemberTable */}
-      <InvoicesTable loading={loading} invoices={memberships?.data || []} />
+      <LockersTable loading={loading} lockers={memberships?.data || []} />
 
       {/* Pagination Controls */}
       <div className="flex items-center justify-between bg-white dark:bg-meta-4 p-2 px-3">
@@ -249,4 +213,4 @@ const InvoicesList = ({ listFilter }: ListProps) => {
   );
 };
 
-export default InvoicesList;
+export default LockersList;

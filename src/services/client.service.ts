@@ -49,14 +49,14 @@ export const clientApi = ultimateGymApiSlice.injectEndpoints({
         method: 'PUT',
         body: clientData,
       }),
-      invalidatesTags: ['Client', 'Dashboard'],
+      invalidatesTags: ['Members', 'Membership', 'Client', 'Dashboard'],
     }),
     deleteClient: builder.mutation<void, string>({
       query: (id) => ({
         url: `/clients/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Client', 'Dashboard'],
+      invalidatesTags: ['Members', 'Membership', 'Client', 'Dashboard'],
     }),
   }),
 });

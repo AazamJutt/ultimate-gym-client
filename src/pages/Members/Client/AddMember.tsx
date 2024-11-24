@@ -17,7 +17,6 @@ const AddMember = () => {
     cnic: '',
     joining_date: '',
     address: '',
-    locker_number: undefined,
     blood_group: '',
     dob: '',
     profession: '',

@@ -39,7 +39,7 @@ const List = ({ listFilter }: ListProps) => {
     data: members,
     error,
     isLoading: loading,
-    refetch
+    refetch,
   } = useGetClientsQuery({
     page: currentPage,
     pageSize: itemsPerPage,
@@ -114,9 +114,16 @@ const List = ({ listFilter }: ListProps) => {
           </div>
         )}
       </div>
-
+      <div className="px-1 py-3">
+        Showing {itemsPerPage * (currentPage - 1) || 1}-
+        {itemsPerPage * (currentPage - 1) + itemsPerPage} of {totalItems || 0}
+      </div>
       {/* Pass search, filter, and pagination as props to MemberTable */}
-      <MemberTable loading={loading} members={members?.data || []} refetch={refetch} />
+      <MemberTable
+        loading={loading}
+        members={members?.data || []}
+        refetch={refetch}
+      />
 
       {/* Pagination Controls */}
       <div className="flex items-center justify-between bg-white dark:bg-meta-4 p-2 px-3">
@@ -134,10 +141,6 @@ const List = ({ listFilter }: ListProps) => {
               {index + 1}
             </button>
           ))}
-        </div>
-        <div>
-          Showing {itemsPerPage * (currentPage - 1) || 1}-
-          {itemsPerPage * (currentPage - 1) + itemsPerPage} of {totalItems || 0}
         </div>
         {/* Page Size Selector */}
         <div className="flex items-center gap-2 relative">

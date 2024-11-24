@@ -39,11 +39,7 @@ const MemberForm = ({
   const fileInputRef = useRef(null);
 
   const [image, setImage] = useState<File | null>();
-  const [imageSrc, setImageSrc] = useState<string>(
-    initialValues?.image
-      ? `http://localhost:8080/${initialValues?.image}`
-      : defaultImage,
-  );
+  const [imageSrc, setImageSrc] = useState<string>(defaultImage);
   if (!isSubForm) {
     formik = useFormik({
       enableReinitialize,
@@ -56,7 +52,6 @@ const MemberForm = ({
         joining_date:
           initialValues?.joining_date || moment().format('YYYY-MM-DD'),
         address: initialValues?.address || '',
-        locker_number: initialValues?.locker_number || '',
         blood_group: initialValues?.blood_group || '',
         dob: initialValues?.dob || '',
         ...(staff
@@ -88,7 +83,6 @@ const MemberForm = ({
           ),
         joining_date: Yup.date().required('Joining date is required'),
         address: Yup.string(),
-        locker_number: Yup.string().nullable(),
         blood_group: Yup.string(),
         dob: Yup.date(),
         ...(staff
@@ -117,7 +111,6 @@ const MemberForm = ({
       },
     });
   }
-  const { data: lockers } = useGetLockersQuery();
   const values = name ? formik.values[name] : formik.values;
   const errors = name ? formik.errors[name] : formik.errors;
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -137,6 +130,13 @@ const MemberForm = ({
       return;
     }
   }, [values.type]);
+
+  useEffect(() => {
+    if (initialValues?.image) {
+      setImageSrc(`http://localhost:8080/${initialValues?.image}`);
+    }
+    return () => setImageSrc('');
+  }, [initialValues]);
 
   let Wrapper = isSubForm ? 'div' : 'form';
   return (
@@ -363,43 +363,8 @@ const MemberForm = ({
                   </div>
                 </div>
                 <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                  {/* <div className="w-full xl:w-1/2">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Locker Number
-                    </label>
-                    <input
-                      type="text"
-                      name={name ? `${name}.locker_number` : 'locker_number'}
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      onChange={formik.handleChange}
-                      value={values.locker_number}
-                    />
-                  </div> */}
-                  <div className="w-full xl:w-1/2">
-                    <label className="mb-2.5 block text-black dark:text-white">
-                      Locker
-                    </label>
-                    <select
-                      name={name ? `${name}.locker_number` : 'locker_number'}
-                      className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                      onChange={formik.handleChange}
-                      value={values.locker_number}
-                    >
-                      <option value="">Select Locker</option>
-                      {lockers?.data?.map((locker: Locker) => (
-                        <option key={locker.id} value={locker.id}>
-                          {locker.locker_number}
-                        </option>
-                      ))}
-                    </select>
-                    <span>Locker Fee is PKR {locker_fee}/-</span>
-                    {errors?.locker_number ? (
-                      <div className="text-red-500">{errors?.settings}</div>
-                    ) : null}
-                  </div>
-
                   {/* Gender */}
-                  <div className="w-full xl:w-1/2">
+                  <div className="w-full">
                     <label className="mb-2.5 block text-black dark:text-white">
                       Select Blood Group
                     </label>
@@ -423,6 +388,20 @@ const MemberForm = ({
                       <div className="text-red-500">{errors.blood_group}</div>
                     ) : null}
                   </div>
+                  {!staff && (
+                    <div className="w-full">
+                      <label className="mb-2.5 block text-black dark:text-white">
+                        Profession
+                      </label>
+                      <input
+                        type="text"
+                        name={name ? `${name}.profession` : 'profession'}
+                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                        onChange={formik.handleChange}
+                        value={values.profession}
+                      />
+                    </div>
+                  )}
                 </div>
                 {staff ? (
                   <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
@@ -487,21 +466,8 @@ const MemberForm = ({
                   </div>
                 ) : (
                   <div className="mb-4.5 flex flex-col gap-6 xl:flex-row">
-                    <div className="w-full xl:w-1/2">
-                      <label className="mb-2.5 block text-black dark:text-white">
-                        Profession
-                      </label>
-                      <input
-                        type="text"
-                        name={name ? `${name}.profession` : 'profession'}
-                        className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                        onChange={formik.handleChange}
-                        value={values.profession}
-                      />
-                    </div>
-
                     {/* Gender */}
-                    <div className="w-full xl:w-1/2">
+                    <div className="w-full">
                       <label className="mb-2.5 block text-black dark:text-white">
                         Discovery Method
                       </label>

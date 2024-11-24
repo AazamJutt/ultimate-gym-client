@@ -47,7 +47,7 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
             <tr>
               <th scope="col" className="bg-gray-500 dark:bg-meta-4 p-4">
                 <p className="hidden text-black dark:text-white sm:block">
-                  Member Id
+                  Membership Id
                 </p>
               </th>
               <th
@@ -66,13 +66,13 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                 scope="col"
                 className="bg-gray-500 dark:bg-meta-4 min-w-32 px-6 py-3"
               >
-                <p className="text-black dark:text-white">Due Date</p>
+                <p className="text-black dark:text-white">Invoice Date</p>
               </th>
               <th scope="col" className="bg-gray-500 dark:bg-meta-4 px-6 py-3">
                 <p className="text-black dark:text-white">Phone</p>
               </th>
               <th scope="col" className="bg-gray-500 dark:bg-meta-4 px-6 py-3 min-w-32">
-                <p className="text-black dark:text-white">Invoice Date</p>
+                <p className="text-black dark:text-white">Due Date</p>
               </th>
               <th
                 scope="col"
@@ -87,6 +87,13 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                dark:bg-meta-4 px-6 py-3"
               >
                 <p className="text-black dark:text-white">Training Fee</p>
+              </th>
+              <th
+                scope="col"
+                className="bg-gray-500 min-w-[135px]
+               dark:bg-meta-4 px-6 py-3"
+              >
+                <p className="text-black dark:text-white">Receiver Name</p>
               </th>
               <th
                 scope="col"
@@ -133,7 +140,7 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                   >
                     <td className="p-4">
                       <p className="text-black dark:text-white">
-                        {invoices.id}
+                        {invoices.membership_id}
                       </p>
                     </td>
 
@@ -167,7 +174,7 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">
-                        {invoices.due_date || 'N/A'}
+                        {invoices.invoice_date || 'N/A'}
                       </p>
                     </td>
                     <td className="px-6 py-4">
@@ -177,7 +184,7 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">
-                        {invoices.invoice_date}
+                        {invoices.due_date}
                       </p>
                     </td>
                     <td className="px-6 py-4">
@@ -188,6 +195,11 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">
                         Rs. {invoices.training_fee}/-
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
+                        {invoices.reciever_name}
                       </p>
                     </td>
                     <td className="px-6 py-4">

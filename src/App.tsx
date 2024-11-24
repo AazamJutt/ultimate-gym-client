@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { Route, Routes, useLocation } from 'react-router-dom';
 
+import { useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Loader from './common/Loader';
 import PageTitle from './components/PageTitle';
+import useRestoreSession from './hooks/useRestoreSession';
 import LayoutWrapper from './layout/LayoutWrapper';
 import AddAttendance from './pages/Attendance/AddAttendance';
 import AttendanceHistory from './pages/Attendance/AttendanceHistory';
@@ -12,6 +14,8 @@ import SignIn from './pages/Authentication/SignIn';
 import SignUp from './pages/Authentication/SignUp';
 import Calendar from './pages/Calendar';
 import Analytics from './pages/Dashboard/Analytics';
+import InvoicesList from './pages/Invoices/List';
+import LockersList from './pages/Lockers/List';
 import AddMember from './pages/Members/Client/AddMember';
 import EditMember from './pages/Members/Client/EditMember';
 import List from './pages/Members/Client/List';
@@ -23,16 +27,13 @@ import EditMembership from './pages/Memberships/EditMembership';
 import MembershipList from './pages/Memberships/List';
 import PackageList from './pages/Packages/List';
 import Settings from './pages/Settings';
-import { useDispatch, useSelector } from 'react-redux';
-import InvoicesList from './pages/Invoices/List';
-import { loginUser } from './redux/slices/auth.slice';
 import { RootState } from './redux/store';
+import ConfirmDialogModal from './components/ConfirmDialog';
 
 function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const { pathname } = useLocation();
-  const navigate = useNavigate(); // Initialize useNavigate for redirection
-  const dispatch = useDispatch();
+  const restoreSession = useRestoreSession();
   // Assume this is how you check if the user is authenticated
   const user = useSelector((state: RootState) => state.auth.user);
 
@@ -47,16 +48,8 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!user) {
-      const token = localStorage.getItem('auth_token') as string;
-      if (token) {
-        dispatch(loginUser(token));
-        navigate('/');
-      } else if (pathname !== '/auth/signin' && pathname !== '/auth/signup')
-        navigate('/auth/signin');
-    }
-  }, [user]);
-
+    restoreSession();
+  }, []);
   return loading ? (
     <Loader />
   ) : (
@@ -236,6 +229,15 @@ function App() {
           }
         />
         <Route
+          path="/lockers/all"
+          element={
+            <>
+              <PageTitle title="Ultimate Gym | Lockers" />
+              <LockersList />
+            </>
+          }
+        />
+        <Route
           path="/calendar"
           element={
             <>
@@ -264,6 +266,8 @@ function App() {
         />
       </Routes>
       <ToastContainer position="bottom-right" />
+
+      <ConfirmDialogModal />
     </LayoutWrapper>
   );
 }

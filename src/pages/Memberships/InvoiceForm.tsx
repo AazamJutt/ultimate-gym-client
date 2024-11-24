@@ -3,22 +3,24 @@ import * as Yup from 'yup';
 import { Invoice } from '../../types/Invoice';
 
 interface InvoiceFormProps {
+  enableReinitialize?: boolean;
   onSubmit: (values: Invoice) => void;
   initialValues: Invoice;
   onCancel?: () => void;
 }
 
 const InvoiceForm = ({
+  enableReinitialize,
   onSubmit,
   initialValues,
   onCancel,
 }: InvoiceFormProps) => {
+  console.log({ initialValues });
   const validationSchema = Yup.object({
     membership_id: Yup.string().required('Membership ID is required'),
     invoice_date: Yup.date().required('Invoice date is required'),
-    reciever_id: Yup.string().required('Reciever ID is required'),
+    reciever_id: Yup.number().required('Reciever ID is required'),
     reciever_name: Yup.string().required('Reciever name is required'),
-    reciever_phone: Yup.string().required('Reciever phone is required'),
     training_fee: Yup.number()
       .required('Training fee is required')
       .min(0)
@@ -27,9 +29,14 @@ const InvoiceForm = ({
       .required('Personal fee is required')
       .min(0)
       .typeError('Personal fee must be a number'),
+    locker_fee: Yup.number()
+      .required('Locker fee is required')
+      .min(0)
+      .typeError('Locker fee must be a number'),
     client_id: Yup.string().required('Client ID is required'),
-    trainer_id: Yup.string().nullable().default(null),
-    nutritionist_id: Yup.string().nullable().default(null),
+    locker_number: Yup.string().nullable().default(null),
+    trainer_id: Yup.number().nullable().default(null),
+    nutritionist_id: Yup.number().nullable().default(null),
     payment_type: Yup.string()
       .oneOf(['cash', 'credit card', 'debit card'], 'Invalid payment type')
       .required('Payment type is required'),
@@ -38,7 +45,7 @@ const InvoiceForm = ({
 
   return (
     <Formik
-      enableReinitialize
+      enableReinitialize={enableReinitialize}
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
@@ -89,6 +96,26 @@ const InvoiceForm = ({
 
           <div>
             <label
+              htmlFor="locker_number"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Locker Number
+            </label>
+            <Field
+              type="string"
+              name="locker_number"
+              disabled
+              id="locker_number"
+              className="bg-stroke dark:bg-strokedark mt-1 p-2 block w-full border dark:border-form-strokedark rounded"
+            />
+            <ErrorMessage
+              name="locker_number"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
+          <div>
+            <label
               htmlFor="training_fee"
               className="block text-sm font-medium text-gray-700"
             >
@@ -128,46 +155,54 @@ const InvoiceForm = ({
               className="text-red-500 text-sm mt-1"
             />
           </div>
+          <div>
+            <label
+              htmlFor="locker_fee"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Locker Fee
+            </label>
+            <Field
+              type="number"
+              name="locker_fee"
+              disabled
+              id="locker_fee"
+              className="bg-stroke dark:bg-strokedark mt-1 p-2 block w-full border dark:border-form-strokedark rounded"
+            />
+            <ErrorMessage
+              name="locker_fee"
+              component="div"
+              className="text-red-500 text-sm mt-1"
+            />
+          </div>
 
           <div>
             <Field
+              hidden
               type="number"
               name="client_id"
               id="client_id"
               className="hidden bg-white dark:bg-meta-4 mt-1 p-2 block w-full border rounded"
             />
-            <ErrorMessage
-              name="client_id"
-              component="div"
-              className="text-red-500 text-sm mt-1"
-            />
           </div>
 
           <div>
             <Field
+              hidden
               type="number"
               name="trainer_id"
               id="trainer_id"
               className="hidden bg-white dark:bg-meta-4 mt-1 p-2 block w-full border rounded"
             />
-            <ErrorMessage
-              name="trainer_id"
-              component="div"
-              className="text-red-500 text-sm mt-1"
-            />
           </div>
 
           <div>
             <Field
+              hidden
               type="number"
               name="nutritionist_id"
               id="nutritionist_id"
               className="hidden bg-white dark:bg-meta-4 mt-1 p-2 block w-full border rounded"
-            />
-            <ErrorMessage
-              name="nutritionist_id"
-              component="div"
-              className="text-red-500 text-sm mt-1"
             />
           </div>
 

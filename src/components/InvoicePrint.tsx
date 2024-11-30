@@ -17,9 +17,8 @@ const InvoicePrint = ({
   const contentRef = useRef<HTMLDivElement>(null);
   const reactToPrintFn = useReactToPrint({
     documentTitle: `Invoice_${Date.now()}`,
-    fonts: [{ family: 'Sans-Serif' }],
     contentRef,
-    pageStyle: `@page { size: A5; margin: 10mm; } body { font-size: 14px; }`, // Set page size to A5, adjust text size, and decrease margins
+    pageStyle: `@page { size: A6; margin: 10mm; }`, // Set page size to A5, adjust text size, and decrease margins
   });
 
   useEffect(() => {
@@ -61,89 +60,140 @@ const InvoicePrint = ({
           Cancel
         </button>
       </div>
-      <div ref={contentRef}>
-        <div style={{ marginBottom: '10px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+      <div
+        style={{ fontFamily: 'Arial, sans-serif', fontSize: '14px' }}
+        ref={contentRef}
+      >
+        <section style={{ marginBottom: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             <img src={Logo} width={80} style={{ filter: 'grayscale(100%)' }} />
             <div>
-              <p style={{ fontWeight: 'bold' }}>Ultimate Gym & Health Club</p>
-              <p style={{ fontSize: '12px' }}>
+              <div style={{ fontWeight: 'bold' }}>
+                Ultimate Gym & Health Club
+              </div>
+              <div style={{ fontSize: '10px' }}>
                 Isa Tower 84-A-B1 45 Ghalib Road, link MM Alam Rd, Block B 1
                 Gulberg III, Lahore
-              </p>
+              </div>
             </div>
           </div>
-        </div>
-        <div style={{ paddingBottom: '10px', borderBottom: '1px solid black' }}>
+        </section>
+        <section
+          style={{ paddingBottom: '10px', borderBottom: '1px solid black' }}
+        >
           <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+            <span style={{ fontSize: '17px', fontWeight: 'bold' }}>
               RECEIPT
             </span>
             <span>{moment(invoiceData.invoice_date).format('MMM D YYYY')}</span>
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: '500' }}>
-              Invoice Number:
-            </span>{' '}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
+            <span style={{ fontWeight: '500' }}>Invoice Number:</span>{' '}
             {invoiceData?.id}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: '500' }}>
-              Membership ID:
-            </span>{' '}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
+            <span style={{ fontWeight: '500' }}>Membership ID:</span>{' '}
             {invoiceData?.membership_id}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
             <span style={{ fontWeight: '500' }}>Name</span>{' '}
             {invoiceData?.client_name}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
             <span style={{ fontWeight: '500' }}>Phone</span>{' '}
             {invoiceData?.client_phone}
           </div>
-        </div>
-        <div
+        </section>
+        <section
           style={{
             margin: '10px 0px',
             borderBottom: '1px solid black',
           }}
         >
-          <span style={{ fontSize: '16px', fontWeight: 'bold' }}>DETAILS</span>
+          <span style={{ fontSize: '17px', fontWeight: 'bold' }}>DETAILS</span>
 
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: '500' }}>
-              Package:
-            </span>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
+            <span style={{ fontWeight: '500' }}>Package:</span>
             {invoiceData?.package_name}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: '500' }}>
-              Training Fee:
-            </span>{' '}
-            Rs. {invoiceData?.training_fee}/-
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
+            <span style={{ fontWeight: '500' }}>Training Fee:</span> Rs.{' '}
+            {invoiceData?.training_fee}/-
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: '500' }}>
-              Personal Fee:
-            </span>{' '}
-            Rs. {invoiceData?.personal_fee}/-
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
+            <span style={{ fontWeight: '500' }}>Personal Fee:</span> Rs.{' '}
+            {invoiceData?.personal_fee}/-
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: '500' }}>
-              Registration Fee:
-            </span>{' '}
-            Rs. {invoiceData?.registration_fee}/-
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
+            <span style={{ fontWeight: '500' }}>Registration Fee:</span> Rs.{' '}
+            {invoiceData?.registration_fee}/-
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: '500' }}>
-              Locker Fee:
-            </span>{' '}
-            Rs. {invoiceData?.locker_fee}/-
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
+            <span style={{ fontWeight: '500' }}>Locker Fee:</span> Rs.{' '}
+            {invoiceData?.locker_fee}/-
           </div>
-          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-            <span style={{ fontWeight: '500' }}>
-              Payment Type:
-            </span>{' '}
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              marginBottom: '2px',
+            }}
+          >
+            <span style={{ fontWeight: '500' }}>Payment Type:</span>{' '}
             {capitalize(invoiceData?.payment_type)}
           </div>
 
@@ -154,9 +204,7 @@ const InvoicePrint = ({
               justifyContent: 'space-between',
             }}
           >
-            <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
-              Total Fee:
-            </span>
+            <span style={{ fontWeight: 'bold' }}>Total Fee:</span>
             <span>
               Rs.{' '}
               {invoiceData?.personal_fee +
@@ -165,24 +213,32 @@ const InvoicePrint = ({
                 (invoiceData?.locker_fee || 0)}
             </span>
           </div>
-        </div>
+        </section>
         <div
           style={{
             padding: '8px 0',
             display: 'flex',
-            gap: '14px',
+            gap: '8px',
             justifyContent: 'space-between',
           }}
         >
-          <p style={{ fontWeight: '500', fontSize: '16px' }}>
+          <p style={{ fontWeight: '500', marginBottom: '8px' }}>
             Thanks for joining our gym and becoming part of our family
           </p>
-          <p style={{ fontWeight: 'bold', fontSize: '16px' }}>Signature</p>
+          <p style={{ fontWeight: 'bold' }}>Signature</p>
         </div>
-        <div style={{ marginTop: '10px', fontSize: '11px' }}>
-          <p style={{ fontWeight: '300' }}>Software Developed by: Codefumes</p>
-          <p style={{ fontWeight: '300' }}>0349-4902816, info@codefumes.tech</p>
-        </div>
+        <section
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '2px',
+            fontSize: '8px',
+            fontWeight: '200',
+          }}
+        >
+          <div>Software Developed by: Codefumes</div>
+          <div>0349-4902816, info@codefumes.tech</div>
+        </section>
       </div>
     </div>
   );

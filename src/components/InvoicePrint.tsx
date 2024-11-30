@@ -153,8 +153,8 @@ const InvoicePrint = ({
               marginBottom: '2px',
             }}
           >
-            <span style={{ fontWeight: '500' }}>Training Fee:</span> Rs.{' '}
-            {invoiceData?.training_fee}/-
+            <span style={{ fontWeight: '500' }}>Registration Fee:</span> Rs.{' '}
+            {invoiceData?.registration_fee}/-
           </div>
           <div
             style={{
@@ -163,7 +163,7 @@ const InvoicePrint = ({
               marginBottom: '2px',
             }}
           >
-            <span style={{ fontWeight: '500' }}>Personal Fee:</span> Rs.{' '}
+            <span style={{ fontWeight: '500' }}>Membership Fee:</span> Rs.{' '}
             {invoiceData?.personal_fee}/-
           </div>
           <div
@@ -173,8 +173,8 @@ const InvoicePrint = ({
               marginBottom: '2px',
             }}
           >
-            <span style={{ fontWeight: '500' }}>Registration Fee:</span> Rs.{' '}
-            {invoiceData?.registration_fee}/-
+            <span style={{ fontWeight: '500' }}>Training Fee:</span> Rs.{' '}
+            {invoiceData?.training_fee}/-
           </div>
           <div
             style={{
@@ -199,7 +199,7 @@ const InvoicePrint = ({
 
           <div
             style={{
-              marginTop: '10px',
+              margin: '10px 0px',
               display: 'flex',
               justifyContent: 'space-between',
             }}
@@ -232,7 +232,7 @@ const InvoicePrint = ({
             display: 'flex',
             flexDirection: 'column',
             gap: '2px',
-            fontSize: '8px',
+            fontSize: '10px',
             fontWeight: '200',
           }}
         >

@@ -15,7 +15,13 @@ const InvoicePrint = ({
   setInvoiceData: () => void;
 }) => {
   const contentRef = useRef<HTMLDivElement>(null);
-  const reactToPrintFn = useReactToPrint({ contentRef });
+  const reactToPrintFn = useReactToPrint({
+    documentTitle: `Invoice_${Date.now()}`,
+    fonts: [{ family: 'Sans-Serif' }],
+    contentRef,
+    pageStyle: `@page { size: A5; margin: 10mm; } body { font-size: 14px; }`, // Set page size to A5, adjust text size, and decrease margins
+  });
+
   useEffect(() => {
     const handleEsc = (event: any) => {
       if (event.key === 'Escape') {
@@ -28,6 +34,7 @@ const InvoicePrint = ({
       window.removeEventListener('keydown', handleEsc);
     };
   }, []);
+
   return (
     <div>
       <div className="flex justify-between mb-5">
@@ -55,96 +62,126 @@ const InvoicePrint = ({
         </button>
       </div>
       <div ref={contentRef}>
-        <div className="mb-5">
-          <div className="flex items-center gap-5">
-            <img src={Logo} className="w-15 grayscale" />
+        <div style={{ marginBottom: '10px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <img src={Logo} width={80} style={{ filter: 'grayscale(100%)' }} />
             <div>
-              <p className="text-lg font-bold">Ultimate Gym & Health Club</p>
-              <p className="text-xs">
+              <p style={{ fontWeight: 'bold' }}>Ultimate Gym & Health Club</p>
+              <p style={{ fontSize: '12px' }}>
                 Isa Tower 84-A-B1 45 Ghalib Road, link MM Alam Rd, Block B 1
                 Gulberg III, Lahore
               </p>
             </div>
           </div>
         </div>
-        <div className="pb-4 border-b dark:border-white border-black">
-          <div className="flex justify-between">
-            <span className="text-lg font-bold">RECEIPT</span>
+        <div style={{ paddingBottom: '10px', borderBottom: '1px solid black' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+              RECEIPT
+            </span>
             <span>{moment(invoiceData.invoice_date).format('MMM D YYYY')}</span>
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>
               Invoice Number:
             </span>{' '}
-            {invoiceData.id}
+            {invoiceData?.id}
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>
               Membership ID:
             </span>{' '}
-            {invoiceData.membership_id}
+            {invoiceData?.membership_id}
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">Name</span>{' '}
-            {invoiceData.client_name}
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>Name</span>{' '}
+            {invoiceData?.client_name}
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">Phone</span>{' '}
-            {invoiceData.client_phone}
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>Phone</span>{' '}
+            {invoiceData?.client_phone}
           </div>
         </div>
-        <div className="my-3 pb-4 border-b dark:border-white border-black">
-          <span className="text-lg font-bold">DETAILS</span>
+        <div
+          style={{
+            margin: '10px 0px',
+            borderBottom: '1px solid black',
+          }}
+        >
+          <span style={{ fontSize: '16px', fontWeight: 'bold' }}>DETAILS</span>
 
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">Package:</span>
-            {invoiceData.package_name}
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>
+              Package:
+            </span>
+            {invoiceData?.package_name}
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>
               Training Fee:
             </span>{' '}
-            Rs. {invoiceData.training_fee}/-
+            Rs. {invoiceData?.training_fee}/-
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>
               Personal Fee:
             </span>{' '}
-            Rs. {invoiceData.personal_fee}/-
+            Rs. {invoiceData?.personal_fee}/-
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>
               Registration Fee:
             </span>{' '}
-            Rs. {invoiceData.registration_fee}/-
+            Rs. {invoiceData?.registration_fee}/-
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">Locker Fee:</span>{' '}
-            Rs. {invoiceData.locker_fee}/-
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>
+              Locker Fee:
+            </span>{' '}
+            Rs. {invoiceData?.locker_fee}/-
           </div>
-          <div className="flex justify-between">
-            <span className="font-medium w-50 text-gray-800">
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span style={{ fontWeight: '500' }}>
               Payment Type:
             </span>{' '}
-            {capitalize(invoiceData.payment_type)}
+            {capitalize(invoiceData?.payment_type)}
           </div>
 
-          <div className="mt-5 flex justify-between">
-            <span className="text-lg font-bold">Total Fee:</span>
+          <div
+            style={{
+              marginTop: '10px',
+              display: 'flex',
+              justifyContent: 'space-between',
+            }}
+          >
+            <span style={{ fontSize: '16px', fontWeight: 'bold' }}>
+              Total Fee:
+            </span>
             <span>
-              Rs. {invoiceData.training_fee + invoiceData.personal_fee}
+              Rs.{' '}
+              {invoiceData?.personal_fee +
+                (invoiceData?.training_fee || 0) +
+                (invoiceData?.registration_fee || 0) +
+                (invoiceData?.locker_fee || 0)}
             </span>
           </div>
         </div>
-        <div className="py-2 flex gap-5 justify-between">
-          <p className="font-medium text-lg">
+        <div
+          style={{
+            padding: '8px 0',
+            display: 'flex',
+            gap: '14px',
+            justifyContent: 'space-between',
+          }}
+        >
+          <p style={{ fontWeight: '500', fontSize: '16px' }}>
             Thanks for joining our gym and becoming part of our family
           </p>
-          <p className="font-bold text-lg">Signature</p>
+          <p style={{ fontWeight: 'bold', fontSize: '16px' }}>Signature</p>
         </div>
-        <div className="mt-3 text-xs">
-          <p className="text-light">Software Developed by: Muhammad Azam</p>
-          <p className="text-light">0349-4902816, m.aazamsultan@gmail.com</p>
+        <div style={{ marginTop: '10px', fontSize: '11px' }}>
+          <p style={{ fontWeight: '300' }}>Software Developed by: Codefumes</p>
+          <p style={{ fontWeight: '300' }}>0349-4902816, info@codefumes.tech</p>
         </div>
       </div>
     </div>

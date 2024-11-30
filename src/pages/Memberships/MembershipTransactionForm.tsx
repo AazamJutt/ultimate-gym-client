@@ -127,7 +127,7 @@ const MembershipTransactionForm = () => {
   });
   return (
     <form onSubmit={formik.handleSubmit}>
-      <Breadcrumb pageName="Create Member" />
+      <Breadcrumb pageName="Create Membership" />
       <MemberForm
         formik={formik}
         name="client"
@@ -143,7 +143,7 @@ const MembershipTransactionForm = () => {
         type="submit"
         className="mt-4 w-full rounded bg-primary py-3 text-white"
       >
-        Add Member
+        Add Membership
       </button>
     </form>
   );

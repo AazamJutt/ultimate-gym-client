@@ -7,9 +7,9 @@ export interface Membership {
   package_name: string;
   trainer_id?: number | null;
   nutritionist_id?: number | null;
-  training_fee: number;
-  personal_fee: number;
-  locker_fee: number;
+  training_fee?: number;
+  personal_fee?: number;
+  locker_fee?: number;
   locker_number: string;
   registration_fee: number;
   invoice?: string;

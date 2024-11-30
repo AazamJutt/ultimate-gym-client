@@ -1,8 +1,9 @@
 import { ApexOptions } from 'apexcharts';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import Datepicker from 'react-tailwindcss-datepicker';
+import { useGetYearlyRevenueAnalyticsQuery } from '../../services/dashboard.service';
 
 const options: ApexOptions = {
   legend: {
@@ -10,7 +11,7 @@ const options: ApexOptions = {
     position: 'top',
     horizontalAlign: 'left',
   },
-  colors: ['#3C50E0', '#80CAEE'],
+  colors: ['#3C50E0', '#E1E52C'],
   chart: {
     fontFamily: 'Satoshi, sans-serif',
     height: 335,
@@ -72,7 +73,7 @@ const options: ApexOptions = {
   markers: {
     size: 4,
     colors: '#fff',
-    strokeColors: ['#3056D3', '#80CAEE'],
+    strokeColors: ['#3056D3', '#E1E52C'],
     strokeWidth: 3,
     strokeOpacity: 0.9,
     strokeDashArray: 0,
@@ -85,20 +86,7 @@ const options: ApexOptions = {
   },
   xaxis: {
     type: 'category',
-    categories: [
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-    ],
+    categories: moment.monthsShort(),
     axisBorder: {
       show: false,
     },
@@ -117,31 +105,16 @@ const options: ApexOptions = {
   },
 };
 
-interface ChartOneState {
-  series: {
-    name: string;
-    data: number[];
-  }[];
-}
-
 const ChartOne: React.FC = () => {
-  const [filter, setFilter] = useState({});
-  const [state, setState] = useState<ChartOneState>({
-    series: [
-      {
-        name: 'Product One',
-        data: [23, 11, 22, 27, 13, 22, 37, 21, 44, 22, 30, 45],
-      },
-    ],
+  const [filter, setFilter] = useState<{ year: string }>({
+    year: new Date().getFullYear().toString(),
   });
-
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-    }));
-  };
-  handleReset;
-
+  const { data, refetch } = useGetYearlyRevenueAnalyticsQuery(
+    filter?.year,
+  );
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white px-5 pt-7.5 pb-5 shadow-default dark:border-strokedark dark:bg-boxdark sm:px-7.5 xl:col-span-8">
       <div className="flex flex-wrap items-start justify-between gap-3 sm:flex-nowrap">
@@ -152,7 +125,7 @@ const ChartOne: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-primary">Total Revenue</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="text-sm font-medium">{filter?.year}</p>
             </div>
           </div>
           <div className="flex min-w-47.5">
@@ -161,44 +134,44 @@ const ChartOne: React.FC = () => {
             </span>
             <div className="w-full">
               <p className="font-semibold text-secondary">Total Sales</p>
-              <p className="text-sm font-medium">12.04.2022 - 12.05.2022</p>
+              <p className="text-sm font-medium">{filter?.year}</p>
             </div>
           </div>
         </div>
         <div className="flex w-full max-w-80 justify-end">
-          <Datepicker
-            showFooter
-            useRange={false}
-            toggleClassName="absolute bg-secondary rounded-r-lg text-black right-0 h-full px-3 text-gray-400 focus:outline-none disabled:opacity-40 disabled:cursor-not-allowed"
-            value={{
-              startDate: filter?.startDate ? moment(filter?.startDate) : null,
-              endDate: filter?.endDate ? moment(filter?.endDate) : null,
-            }}
-            onChange={(newValue) => {
-              setFilter((prev: any) => ({
-                ...prev,
-                startDate: newValue?.startDate
-                  ? moment(newValue?.startDate).format('YYYY-MM-DD')
-                  : '',
-                endDate: newValue?.endDate
-                  ? moment(newValue?.endDate).format('YYYY-MM-DD')
-                  : '',
-              }));
-            }}
-            showShortcuts={true}
+          <input
+            type="number"
+            value={filter?.year}
+            onChange={(e) =>
+              setFilter((prev: any) => ({ ...prev, year: e.target.value }))
+            }
+            min="2024"
+            max="2100"
+            step="1"
+            placeholder="Year"
+            className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
           />
         </div>
       </div>
 
       <div>
+        {data?.data?.series && (
         <div id="chartOne" className="-ml-5">
           <ReactApexChart
-            options={options}
-            series={state.series}
+              options={{
+                ...options,
+                yaxis: {
+                  ...options.yaxis,
+                  min: Math.min(...data.data.series[0].data),
+                  max: Math.max(...data.data.series[0].data)+1000,
+                },
+              }}
+              series={data.data.series}
             type="area"
             height={350}
           />
         </div>
+        )}
       </div>
     </div>
   );

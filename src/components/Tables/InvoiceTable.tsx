@@ -199,7 +199,7 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">
-                        {invoices.reciever_name}
+                        {invoices?.reciever_name || 'N/A'}
                       </p>
                     </td>
                     <td className="px-6 py-4">

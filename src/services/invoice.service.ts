@@ -32,7 +32,7 @@ export const invoiceApi = ultimateGymApiSlice.injectEndpoints({
         method: 'POST',
         body: newPacakge,
       }),
-      invalidatesTags: ['Invoice', 'Dashboard', 'Membership'],
+      invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
     }),
   }),
 });

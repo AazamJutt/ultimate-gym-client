@@ -46,7 +46,7 @@ const PackageForm = ({
           <div>
             <label
               htmlFor="name"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Package Name
             </label>
@@ -66,7 +66,7 @@ const PackageForm = ({
           <div>
             <label
               htmlFor="price"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Price
             </label>
@@ -86,7 +86,7 @@ const PackageForm = ({
           <div>
             <label
               htmlFor="status"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Status
             </label>
@@ -109,7 +109,7 @@ const PackageForm = ({
           <div>
             <label
               htmlFor="period"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Period (in months)
             </label>

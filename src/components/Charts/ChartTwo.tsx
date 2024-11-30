@@ -1,8 +1,9 @@
 import { ApexOptions } from 'apexcharts';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ReactApexChart from 'react-apexcharts';
 import Datepicker from 'react-tailwindcss-datepicker';
+import { useGetSalesQuery } from '../../services/dashboard.service';
 
 const options: ApexOptions = {
   colors: ['#3C50E0', '#80CAEE'],
@@ -64,34 +65,16 @@ const options: ApexOptions = {
   },
 };
 
-interface ChartTwoState {
-  series: {
-    name: string;
-    data: number[];
-  }[];
-}
-
 const ChartTwo: React.FC = () => {
-  const [filter, setFilter] = useState({});
-  const [state, setState] = useState<ChartTwoState>({
-    series: [
-      {
-        name: 'Sales',
-        data: [44, 55, 41, 67, 22, 43, 65],
-      },
-      {
-        name: 'Revenue',
-        data: [13, 23, 20, 8, 13, 27, 15],
-      },
-    ],
+  const [filter, setFilter] = useState({
+    type: 'month',
+    startDate: moment().startOf('month').format('YYYY-MM-DD'),
+    endDate: moment().endOf('month').format('YYYY-MM-DD'),
   });
-
-  const handleReset = () => {
-    setState((prevState) => ({
-      ...prevState,
-    }));
-  };
-  handleReset;
+  const { data, refetch } = useGetSalesQuery(filter);
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <div className="col-span-12 rounded-sm border border-stroke bg-white p-7.5 shadow-default dark:border-strokedark dark:bg-boxdark xl:col-span-4">
@@ -103,6 +86,18 @@ const ChartTwo: React.FC = () => {
         </div>
       </div>
       <div className="mb-3">
+        <div className="flex items-center mb-3">
+          <select
+            className="mr-3 p-2 border border-stroke dark:border-strokedark rounded bg-white text-black dark:bg-gray-700 dark:text-white"
+            value={filter?.type || 'day'}
+            onChange={(e) =>
+              setFilter((prev: any) => ({ ...prev, type: e.target.value }))
+            }
+          >
+            <option value="day">Day</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+          </select>
         <Datepicker
           showFooter
           useRange={false}
@@ -125,15 +120,21 @@ const ChartTwo: React.FC = () => {
           showShortcuts={true}
         />
       </div>
+      </div>
       <div>
+        {data?.data?.series && (
         <div id="chartTwo" className="-ml-5 -mb-9">
           <ReactApexChart
-            options={options}
-            series={state.series}
+              options={{
+                ...options,
+                xaxis: { ...options.xaxis, categories: data?.data?.labels },
+              }}
+              series={data?.data?.series}
             type="bar"
             height={350}
           />
         </div>
+        )}
       </div>
     </div>
   );

@@ -72,7 +72,7 @@ const List = ({ listFilter }: ListProps) => {
   };
   return (
     <>
-      <Breadcrumb pageName="All Packages" />
+      <Breadcrumb pageName="Packages" />
 
       <div className="flex items-center justify-between mb-4">
         {/* Search Bar */}

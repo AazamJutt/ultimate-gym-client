@@ -120,7 +120,7 @@ const List = ({ listFilter }: ListProps) => {
   };
   return (
     <>
-      <Breadcrumb pageName="All Staff Members" />
+      <Breadcrumb pageName="Staff Members" />
 
       <div className="flex items-center justify-between mb-4">
         {/* Search Bar */}

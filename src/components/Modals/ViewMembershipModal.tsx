@@ -48,7 +48,7 @@ const ViewMembershipModal = ({ isOpen, onClose, membership }: Props) => {
                 : defaultImage
             }
             alt="Client"
-            className="w-32 h-32 rounded-lg"
+            className="w-32 h-32 rounded-lg object-contain"
           />
           <div className="ml-4">
             <p className="text-gray-800 font-medium">
@@ -68,11 +68,11 @@ const ViewMembershipModal = ({ isOpen, onClose, membership }: Props) => {
           </p>
           <p className="text-gray-600">
             <strong className="text-gray-800">Locker Number:</strong>{' '}
-            {membership.locker_number || 'N/A'}
+            {membership?.locker_number || 'N/A'}
           </p>
           <p className="text-gray-600">
             <strong className="text-gray-800">Blood Group:</strong>{' '}
-            {membership.blood_group || 'N/A'}
+            {membership?.blood_group || 'N/A'}
           </p>
           <p className="text-gray-600">
             <strong className="text-gray-800">Package:</strong>{' '}
@@ -85,8 +85,12 @@ const ViewMembershipModal = ({ isOpen, onClose, membership }: Props) => {
                 {membership.personal_fee}
               </p>
               <p className="text-gray-600">
-                <strong className="text-gray-800">Training Fee:</strong> PKR{' '}
-                {membership.training_fee}
+                <strong className="text-gray-800">Training Fee:</strong>{' '}
+                {membership?.training_fee ? `PKR ${membership.training_fee}` : 'N/A'}
+              </p>
+              <p className="text-gray-600">
+                <strong className="text-gray-800">Locker Fee:</strong>{' '}
+                {membership?.locker_fee ? `PKR ${membership.locker_fee}` : 'N/A'}
               </p>
               <p className="text-gray-600">
                 <strong className="text-gray-800">Fee Date:</strong>{' '}
@@ -94,11 +98,11 @@ const ViewMembershipModal = ({ isOpen, onClose, membership }: Props) => {
               </p>
               <p className="text-gray-600">
                 <strong className="text-gray-800">Trainer:</strong>{' '}
-                {membership.trainer_name}
+                {membership?.trainer_name || 'N/A'}
               </p>
               <p className="text-gray-600">
                 <strong className="text-gray-800">Nutritionist:</strong>{' '}
-                {membership.nutritionist_name}
+                {membership?.nutritionist_name || 'N/A'}
               </p>
             </>
           ) : (

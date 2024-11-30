@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import Breadcrumb from '../../components/Breadcrumbs/Breadcrumb';
 import { useAddAttendanceMutation } from '../../services/attendance.service';
 import { useGetStaffsQuery } from '../../services/staff.service';
+import { toast } from 'react-toastify';
 
 const AddAttendance = () => {
   const [selectedStatus, setSelectedStatus] = useState('');
@@ -34,9 +35,10 @@ const AddAttendance = () => {
     }),
     onSubmit: async (values) => {
       try {
-        await addAttendance(values);
-        alert('Attendance added successfully');
+        await addAttendance({ attendanceData: values });
+        toast.success('Attendance added successfully');
       } catch (error) {
+        toast.error('Failed to add attendance');
         console.error('Failed to add attendance:', error);
       }
     },

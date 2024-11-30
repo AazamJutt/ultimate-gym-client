@@ -95,6 +95,7 @@ const MembershipList = ({ listFilter }: ListProps) => {
 
   const handleSubmit = async (values: Invoice) => {
     try {
+      console.log({ values });
       const { data: response } = await createInvoice(values);
       if (response?.success) {
         toast.success(`Invoice record added successfully`);
@@ -132,7 +133,7 @@ const MembershipList = ({ listFilter }: ListProps) => {
   }, [memberships, searchParams]);
   return (
     <>
-      <Breadcrumb pageName="All Memberships" />
+      <Breadcrumb pageName="Memberships" />
 
       <div className="flex items-center justify-between gap-5 mb-4">
         {/* Search Bar */}
@@ -300,7 +301,6 @@ const MembershipList = ({ listFilter }: ListProps) => {
         <div className="bg-white dark:bg-strokedark p-8 rounded-lg shadow-xl text-black dark:text-white max-w-md w-full">
           {selectedMembership && (
             <InvoiceForm
-              enableReinitialize
               onCancel={handleCancelInvoice}
               onSubmit={handleSubmit}
               initialValues={{
@@ -309,10 +309,10 @@ const MembershipList = ({ listFilter }: ListProps) => {
                 package_id: selectedMembership.package_id,
                 package_name: selectedMembership.package_name,
                 nutritionist_id: selectedMembership?.nutritionist_id || null,
-                training_fee: selectedMembership?.training_fee,
-                registration_fee: selectedMembership?.registration_fee,
-                personal_fee: selectedMembership?.personal_fee,
-                locker_fee: selectedMembership?.locker_fee,
+                training_fee: selectedMembership?.training_fee || 0,
+                registration_fee: selectedMembership?.registration_fee || 0,
+                personal_fee: selectedMembership?.personal_fee || 0,
+                locker_fee: selectedMembership?.locker_fee || 0,
                 locker_number: selectedMembership?.locker_number || '',
                 client_id: selectedMembership.client_id,
                 invoice_date: moment().format('YYYY-MM-DD'),

@@ -3,14 +3,12 @@ import * as Yup from 'yup';
 import { Invoice } from '../../types/Invoice';
 
 interface InvoiceFormProps {
-  enableReinitialize?: boolean;
   onSubmit: (values: Invoice) => void;
   initialValues: Invoice;
   onCancel?: () => void;
 }
 
 const InvoiceForm = ({
-  enableReinitialize,
   onSubmit,
   initialValues,
   onCancel,
@@ -19,8 +17,6 @@ const InvoiceForm = ({
   const validationSchema = Yup.object({
     membership_id: Yup.string().required('Membership ID is required'),
     invoice_date: Yup.date().required('Invoice date is required'),
-    reciever_id: Yup.number().required('Reciever ID is required'),
-    reciever_name: Yup.string().required('Reciever name is required'),
     training_fee: Yup.number()
       .required('Training fee is required')
       .min(0)
@@ -45,7 +41,7 @@ const InvoiceForm = ({
 
   return (
     <Formik
-      enableReinitialize={enableReinitialize}
+      enableReinitialize={true}
       initialValues={initialValues}
       validationSchema={validationSchema}
       onSubmit={onSubmit}
@@ -55,7 +51,7 @@ const InvoiceForm = ({
           <div>
             <label
               htmlFor="membership_id"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Membership ID
             </label>
@@ -76,7 +72,7 @@ const InvoiceForm = ({
           <div>
             <label
               htmlFor="invoice_date"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Invoice Date
             </label>
@@ -97,7 +93,7 @@ const InvoiceForm = ({
           <div>
             <label
               htmlFor="locker_number"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Locker Number
             </label>
@@ -117,7 +113,7 @@ const InvoiceForm = ({
           <div>
             <label
               htmlFor="training_fee"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Training Fee
             </label>
@@ -138,7 +134,7 @@ const InvoiceForm = ({
           <div>
             <label
               htmlFor="personal_fee"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Personal Fee
             </label>
@@ -158,7 +154,7 @@ const InvoiceForm = ({
           <div>
             <label
               htmlFor="locker_fee"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Locker Fee
             </label>
@@ -209,7 +205,7 @@ const InvoiceForm = ({
           <div>
             <label
               htmlFor="payment_type"
-              className="block text-sm font-medium text-gray-700"
+              className="block text-sm font-medium"
             >
               Payment Type
             </label>

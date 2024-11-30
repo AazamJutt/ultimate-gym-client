@@ -21,11 +21,15 @@ export const lockerApi = ultimateGymApiSlice.injectEndpoints({
         page: number;
         pageSize: number;
         search?: string;
+        filter?: {
+          status?: string;
+        };
       }
     >({
-      query: ({ page, pageSize, search }) => {
+      query: ({ page, pageSize, search, filter }) => {
         let queryParams = `?page=${page}&pageSize=${pageSize}`;
         if (search) queryParams += `&search=${search}`;
+        if (filter?.status !== '') queryParams += `&assigned=${filter?.status}`;
 
         return {
           url: `/lockers${queryParams}`,

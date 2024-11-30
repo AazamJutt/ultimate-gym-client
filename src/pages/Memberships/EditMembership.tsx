@@ -79,7 +79,7 @@ const EditMembership = () => {
           className="h-32 w-32 object-cover rounded-xl border-2 border-gray-300"
           src={
             member?.image
-              ? `http://localhost:8080/${member.image}`
+              ? member.image
               : defaultImage
           }
           alt="User"

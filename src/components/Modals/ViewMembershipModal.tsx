@@ -44,7 +44,7 @@ const ViewMembershipModal = ({ isOpen, onClose, membership }: Props) => {
           <img
             src={
               membership.client_image
-                ? `http://localhost:8080/${membership.client_image}`
+                ? membership.client_image
                 : defaultImage
             }
             alt="Client"

@@ -101,7 +101,7 @@ const AttendanceTable = ({ loading, attendances }: AttendanceTableProps) => {
                         width={50}
                         src={
                           attendance.client_image
-                            ? `http://localhost:8080/${attendances.member_image}`
+                            ? attendances.member_image
                             : defaultImage
                         }
                         alt="User"

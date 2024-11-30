@@ -208,7 +208,7 @@ const MemberTable = ({
                         width={50}
                         src={
                           member.image
-                            ? `http://localhost:8080/${member.image}`
+                            ? member.image
                             : defaultImage
                         }
                         alt="User"

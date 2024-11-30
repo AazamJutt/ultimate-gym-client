@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom';
 
 import { useSelector } from 'react-redux';
 import { ToastContainer } from 'react-toastify';
@@ -55,6 +55,12 @@ function App() {
   ) : (
     <LayoutWrapper>
       <Routes>
+        <Route
+          path="*"
+          element={
+            <Navigate to="/" replace />
+          }
+        />
         <Route
           path="/auth/signin"
           element={

@@ -150,7 +150,7 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                         width={50}
                         src={
                           invoices.client_image
-                            ? `http://localhost:8080/${invoices.client_image}`
+                            ? invoices.client_image
                             : defaultImage
                         }
                         alt="User"

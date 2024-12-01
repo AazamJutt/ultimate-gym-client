@@ -62,10 +62,11 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
       try {
         const response = await adjustInvoice({
           id: selectedInvoice.id,
-          data: { note: selectedInvoice.note || 'Invoice Adjusted' },
+          data: { note: note || 'Invoice Adjusted' },
         });
         console.log(response);
         toast.success(response.data?.message);
+        setNote('');
         setSelectedInvoice(undefined);
         setIsAdjustReturnModalOpen(false);
       } catch (error: any) {
@@ -79,7 +80,7 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
       try {
         const response = await returnInvoice({
           id: selectedInvoice.id,
-          data: { note: selectedInvoice.note || 'Invoice Returned' },
+          data: { note: note || 'Invoice Returned' },
         });
         toast.success(response.data?.message);
         setSelectedInvoice(undefined);
@@ -206,6 +207,9 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
               </th>
               <th scope="col" className="bg-gray-500 dark:bg-meta-4 px-6 py-3">
                 <p className="text-black dark:text-white">Nutritionist</p>
+              </th>
+              <th scope="col" className="bg-gray-500 dark:bg-meta-4 px-6 py-3">
+                <p className="text-black dark:text-white">Adjustment Reason</p>
               </th>
               <th
                 scope="col"
@@ -345,6 +349,11 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">
                         {invoices.nutritionist_name || 'N/A'}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
+                        {invoices.note || 'N/A'}
                       </p>
                     </td>
                     <td className="px-6 py-4 min-w-[200px]">

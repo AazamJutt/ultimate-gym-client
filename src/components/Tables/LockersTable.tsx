@@ -1,7 +1,5 @@
 import moment from 'moment';
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
-import defaultImage from '../../images/user/user-03.png';
 import { Locker } from '../../types/Locker';
 
 const SkeletonLoader = () => {
@@ -24,22 +22,9 @@ interface LockersTableProps {
 }
 
 const LockersTable = ({
-  setLockerData,
   loading,
   lockers,
 }: LockersTableProps) => {
-  const [selectedLocker, setSelectedLocker] = useState<Locker | undefined>();
-  const [isViewModalOpen, setIsViewModalOpen] = useState(false);
-
-  const openViewModal = (lockers: any) => {
-    setSelectedLocker(lockers);
-    setIsViewModalOpen(true);
-  };
-
-  const closeViewModal = () => {
-    setSelectedLocker(null);
-    setIsViewModalOpen(false);
-  };
   return (
     <div className="border border-stroke dark:border-graydark relative overflow-x-auto sm:rounded-t-lg">
       <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
@@ -75,12 +60,6 @@ const LockersTable = ({
                 className="bg-gray-500 dark:bg-meta-4 px-6 py-3 min-w-[200px]"
               >
                 <p className="text-black dark:text-white">Assigned At</p>
-              </th>
-              <th
-                scope="col"
-                className="bg-gray dark:bg-meta-4 px-6 py-3 sticky right-0"
-              >
-                <p className="text-black dark:text-white">Actions</p>
               </th>
             </tr>
           </thead>
@@ -133,16 +112,6 @@ const LockersTable = ({
                             )
                           : 'N/A'}
                       </p>
-                    </td>
-                    <td className="px-6 py-4 sticky right-0 bg-gray dark:bg-strokedark">
-                      <div className="w-full flex justify-start gap-2">
-                        <button
-                          className="px-3 border border-primary bg-primary bg-opacity-20 text-primary rounded hover:bg-opacity-30 transition-colors duration-300"
-                          onClick={() => openViewModal(lockers)}
-                        >
-                          View
-                        </button>
-                      </div>
                     </td>
                   </tr>
                 ))}

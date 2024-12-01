@@ -24,7 +24,7 @@ const useRestoreSession = () => {
         }
       } catch (e) {
         console.error('Failed to verify token:', e);
-        toast.error('Failed to verify token');
+        toast.error(e?.data?.message || 'Failed to verify token');
       }
     } else if (pathname !== '/auth/signin' && pathname !== '/auth/signup') {
       navigate('/auth/signin');

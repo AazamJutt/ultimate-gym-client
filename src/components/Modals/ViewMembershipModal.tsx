@@ -61,7 +61,7 @@ const ViewMembershipModal = ({ isOpen, onClose, membership }: Props) => {
         <div className="space-y-2">
           <p className="text-gray-600">
             <strong className="text-gray-800">Joining Date:</strong>{' '}
-            {moment(membership.joining_date).format('YYYY-MM-DD')}
+            {moment(membership.joining_date).format('DD MMM YYYY')}
           </p>
           <p className="text-gray-600">
             <strong className="text-gray-800">CNIC:</strong> {membership.cnic}
@@ -94,7 +94,7 @@ const ViewMembershipModal = ({ isOpen, onClose, membership }: Props) => {
               </p>
               <p className="text-gray-600">
                 <strong className="text-gray-800">Fee Date:</strong>{' '}
-                {moment(membership.fee_date).format('YYYY-MM-DD')}
+                {moment(membership.fee_date).format('DD MMM YYYY')}
               </p>
               <p className="text-gray-600">
                 <strong className="text-gray-800">Trainer:</strong>{' '}

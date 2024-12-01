@@ -57,7 +57,7 @@ const ViewMemberModal = ({ isOpen, onClose, member }: Props) => {
             <strong className="text-gray-800">
               <FaCalendarAlt className="inline-block ml-1" /> Joining Date:
             </strong>{' '}
-            {moment(member.joining_date).format('YYYY-MM-DD')}
+            {moment(member.joining_date).format('DD MMM YYYY')}
           </p>
           <p className="text-gray-600">
             <strong className="text-gray-800">
@@ -84,7 +84,7 @@ const ViewMemberModal = ({ isOpen, onClose, member }: Props) => {
               {' '}
               <FaCalendarAlt className="inline-block ml-1" /> Fee Date:
             </strong>{' '}
-            {moment(member.fee_date).format('YYYY-MM-DD')}{' '}
+            {moment(member.fee_date).format('DD MMM YYYY')}
           </p>
         </div>
 

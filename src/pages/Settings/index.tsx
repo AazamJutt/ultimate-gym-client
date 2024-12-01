@@ -77,7 +77,7 @@ const Settings = () => {
       );
       resetForm();
     } catch (error) {
-      toast.error('Failed to update user');
+      toast.error(error?.data?.message || 'Failed to update user');
     }
   };
 
@@ -93,7 +93,7 @@ const Settings = () => {
           toast.success('User deleted successfully');
           resetForm();
         } catch (error) {
-          toast.error('Failed to delete user');
+          toast.error(error?.data?.message || 'Failed to delete user');
         }
       },
     });
@@ -162,7 +162,7 @@ const Settings = () => {
         toast.success('Settings updated successfully');
       } catch (error) {
         console.error('Error updating settings:', error);
-        toast.error(error.data.message);
+        toast.error(error?.data?.message || 'Failed to update settings');
       }
     },
   });
@@ -595,7 +595,7 @@ const Settings = () => {
                     </td>
                     <td className="px-2 py-3">
                       <p className="text-sm text-gray-5 00 dark:text-gray-400">
-                        {moment(user.created_at).format('DD/MM/YYYY h:m A')}
+                        {moment(user.created_at).format('DD MMM YYYY h:m A')}
                       </p>
                     </td>
                     {user.status === 'active' ? (

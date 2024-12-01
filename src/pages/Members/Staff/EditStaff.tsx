@@ -43,7 +43,7 @@ const EditStaff = () => {
       if (!response.error) {
         toast.success('Staff Member edited successfully')
         // navigate(`/staff/all`)
-      } else toast.error('Could not edit staff  member');
+      } else toast.error(response?.data?.message || 'Could not edit staff member');
     } catch (error) {
       console.error('Failed to update staff member:', error);
     }

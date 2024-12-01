@@ -118,10 +118,10 @@ const MembershipTransactionForm = () => {
         if (!response.error) {
           toast.success('Membership added successfully');
           navigate(`/memberships/all?invoice_id=${response.data?.invoice.id}`);
-        } else toast.error('Could not add Membership');
+        } else toast.error(response?.data?.message || 'Could not add Membership');
       } catch (error) {
         console.error('Failed to add Membership:', error);
-        toast.error('Failed to add Membership:', error.message);
+        toast.error(error?.data?.message || 'Failed to add Membership');
       }
     },
   });

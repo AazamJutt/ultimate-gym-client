@@ -31,10 +31,10 @@ const AddMembership = () => {
       if (!response.error) {
         toast.success('Membership added successfully');
         navigate(`/members/all`);
-      } else toast.error('Could not add member');
+      } else toast.error(response?.data?.message || 'Could not add member');
     } catch (error) {
       console.error('Failed to add Membership:', error);
-      toast.error('Failed to add Membership:', error?.message);
+      toast.error(error?.data?.message || 'Failed to add Membership');
     }
   };
   return <MembershipTransactionForm  />;

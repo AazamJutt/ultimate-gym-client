@@ -118,7 +118,7 @@ const MemberTable = ({
       refetch();
     } catch (err) {
       console.error(err);
-      toast.error('Could not mark Attendance');
+      toast.error(err?.data?.message ||'Could not mark Attendance');
     }
   };
 
@@ -281,7 +281,7 @@ const MemberTable = ({
                         {staff
                           ? member?.locker_number || 'N/A'
                           : member.joining_date
-                          ? moment(member.joining_date).format('YYYY-MM-DD')
+                          ? moment(member.joining_date).format('DD MMM YYYY')
                           : 'N/A'}
                       </p>
                     </td>
@@ -292,7 +292,7 @@ const MemberTable = ({
                             ? `PKR ${(member as Staff).fee}/-`
                             : 'N/A'
                           : member.fee_date
-                          ? moment(member.fee_date).format('YYYY-MM-DD')
+                          ? moment(member.fee_date).format('DD MMM YYYY')
                           : 'N/A'}
                       </p>
                     </td>

@@ -64,10 +64,10 @@ const List = ({ listFilter }: ListProps) => {
           `Package ${isEditing ? 'updated' : 'added'} successfully`,
         );
         closeViewModal();
-      } else toast.error(`Could not ${action} Package`);
+      } else toast.error(response?.data?.message || `Could not ${action} Package`);
     } catch (error) {
       console.error(`Failed to ${action} Package:`, error);
-      toast.error(`Failed to ${action} Package:`, error?.message);
+      toast.error(error?.data?.message || `Failed to ${action} Package`);
     }
   };
   return (

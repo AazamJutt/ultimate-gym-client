@@ -15,4 +15,6 @@ export interface Invoice {
   nutritionist_id: number | null;
   payment_type: 'cash' | 'credit card' | 'debit card';
   due_date: string;
+  note?: string;
+  status?: 'adjusted' | 'returned';
 }

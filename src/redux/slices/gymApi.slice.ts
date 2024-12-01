@@ -30,6 +30,8 @@ export const ultimateGymApiSlice = createApi({
     'Package',
     'Staff',
     'MemberAnalytics',
+    'Sales',
+    'RevenueAnalytics',
   ],
   baseQuery: baseQuery,
   endpoints: (builder) => ({}),

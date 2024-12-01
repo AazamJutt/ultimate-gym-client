@@ -141,7 +141,7 @@ const AttendanceTable = ({ loading, attendances }: AttendanceTableProps) => {
                       </td>
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">
-                        {attendance.date || 'N/A'}
+                        {moment(attendance.date).format('DD MMM YYYY')}
                       </p>
                     </td>
                     <td className="px-6 py-4">

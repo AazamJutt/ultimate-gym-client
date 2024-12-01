@@ -44,10 +44,10 @@ const AddStaff = () => {
       if (!response.error) {
         toast.success('Member added successfully');
         navigate(`/staff/all`);
-      } else toast.error('Could not add member');
+      } else toast.error(response?.data?.message || 'Could not add member');
     } catch (error: any) {
       console.error('Failed to add member:', error);
-      toast.error('Failed to add member:', error.message);
+      toast.error(error?.data?.message || 'Failed to add member');
     }
   };
 

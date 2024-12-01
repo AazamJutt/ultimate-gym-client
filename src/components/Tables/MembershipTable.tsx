@@ -86,7 +86,7 @@ const MembershipTable = ({
           refetch();
           toast.success('Membership deactivated successfully');
         } else {
-          toast.error(response?.data?.details || 'Something went wrong');
+          toast.error(response?.data?.message || 'Something went wrong');
         }
       },
     });
@@ -106,7 +106,7 @@ const MembershipTable = ({
       refetch();
     } catch (err) {
       console.error(err);
-      toast.error('Could not mark Attendance');
+      toast.error(err?.data?.message || 'Could not mark Attendance');
     }
   };
   return (
@@ -275,7 +275,7 @@ const MembershipTable = ({
 
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">
-                        {membership.fee_date || 'N/A'}
+                        {moment(membership.fee_date).format('DD MMM YYYY')}
                       </p>
                     </td>
                     <td className="px-6 py-4">

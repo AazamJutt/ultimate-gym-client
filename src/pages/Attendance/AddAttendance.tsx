@@ -38,7 +38,7 @@ const AddAttendance = () => {
         await addAttendance({ attendanceData: values });
         toast.success('Attendance added successfully');
       } catch (error) {
-        toast.error('Failed to add attendance');
+        toast.error(error?.data?.message || 'Failed to add attendance');
         console.error('Failed to add attendance:', error);
       }
     },

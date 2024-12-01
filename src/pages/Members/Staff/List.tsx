@@ -60,10 +60,10 @@ const List = ({ listFilter }: ListProps) => {
             toast.success(`Locker Unassigned successfully`);
             handleCancelAssignLocker();
             refetch();
-          } else toast.error(`Could not Unassigned Locker`);
+          } else toast.error(response?.data?.message || 'Could not Unassigned Locker');
         } catch (error: any) {
           console.error(`Failed to Unassigned Locker:`, error);
-          toast.error(`Failed to Unassigned Locker:`, error?.data?.message);
+          toast.error(error?.data?.message || 'Failed to Unassigned Locker');
         }
       },
     });
@@ -112,10 +112,10 @@ const List = ({ listFilter }: ListProps) => {
         toast.success(`Locker assigned successfully`);
         handleCancelAssignLocker();
         refetch();
-      } else toast.error(`Could not assign Locker`);
+      } else toast.error(response?.data?.message || 'Could not assign Locker');
     } catch (error) {
       console.error(`Failed to assign Locker:`, error);
-      toast.error(`Failed to assign Locker:`, error?.data?.message);
+      toast.error(error?.data?.message || 'Failed to assign Locker');
     }
   };
   return (

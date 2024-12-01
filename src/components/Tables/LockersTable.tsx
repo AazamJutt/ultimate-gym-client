@@ -23,7 +23,11 @@ interface LockersTableProps {
   lockers: any[];
 }
 
-const LockersTable = ({ setLockerData, loading, lockers }: LockersTableProps) => {
+const LockersTable = ({
+  setLockerData,
+  loading,
+  lockers,
+}: LockersTableProps) => {
   const [selectedLocker, setSelectedLocker] = useState<Locker | undefined>();
   const [isViewModalOpen, setIsViewModalOpen] = useState(false);
 
@@ -108,12 +112,7 @@ const LockersTable = ({ setLockerData, loading, lockers }: LockersTableProps) =>
 
                     <td className="p-4">
                       <p className="text-black dark:text-white mb-2">
-                        <Link
-                          className="hover:underline"
-                          to={`/members/${lockers.client_id}/edit`}
-                        >
-                          {lockers.client_name}
-                        </Link>
+                        {lockers.client_name}
                       </p>
                     </td>
                     <td className="px-6 py-4">
@@ -130,7 +129,7 @@ const LockersTable = ({ setLockerData, loading, lockers }: LockersTableProps) =>
                       <p className="text-black dark:text-white">
                         {lockers.assigned_at
                           ? moment(lockers.assigned_at).format(
-                              'MM/DD/YYYY hh:mm A',
+                              'DD MMM YYYY hh:mm A',
                             )
                           : 'N/A'}
                       </p>

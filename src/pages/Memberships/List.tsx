@@ -102,10 +102,10 @@ const MembershipList = ({ listFilter }: ListProps) => {
         handleCancelInvoice();
         if (response?.data) setInvoiceData(response?.data);
         refetch();
-      } else toast.error(`Could not create Invoice`);
+      } else toast.error(response?.data?.message || 'Could not create Invoice');
     } catch (error) {
       console.error(`Failed to create Package:`, error);
-      toast.error(`Failed to create Package:`, error?.message);
+      toast.error(error?.data?.message || 'Failed to create Package');
     }
   };
   useEffect(() => {

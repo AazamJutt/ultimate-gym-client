@@ -29,7 +29,7 @@ const SignIn: React.FC = () => {
           navigate('/');
         }
       } catch (error) {
-        toast.error(error.data.message);
+        toast.error(error?.data?.message || 'Failed to login');
       }
     }
   };

@@ -3,12 +3,14 @@ import * as Yup from 'yup';
 import { Invoice } from '../../types/Invoice';
 
 interface InvoiceFormProps {
+  isEditing?: boolean;
   onSubmit: (values: Invoice) => void;
   initialValues: Invoice;
   onCancel?: () => void;
 }
 
 const InvoiceForm = ({
+  isEditing = false,
   onSubmit,
   initialValues,
   onCancel,
@@ -120,7 +122,7 @@ const InvoiceForm = ({
             <Field
               type="number"
               name="training_fee"
-              disabled
+              disabled={!isEditing}
               id="training_fee"
               className="bg-stroke dark:bg-strokedark mt-1 p-2 block w-full border dark:border-form-strokedark rounded"
             />
@@ -141,7 +143,7 @@ const InvoiceForm = ({
             <Field
               type="number"
               name="personal_fee"
-              disabled
+              disabled={!isEditing}
               id="personal_fee"
               className="bg-stroke dark:bg-strokedark mt-1 p-2 block w-full border dark:border-form-strokedark rounded"
             />
@@ -161,7 +163,7 @@ const InvoiceForm = ({
             <Field
               type="number"
               name="locker_fee"
-              disabled
+              disabled={!isEditing}
               id="locker_fee"
               className="bg-stroke dark:bg-strokedark mt-1 p-2 block w-full border dark:border-form-strokedark rounded"
             />
@@ -247,7 +249,7 @@ const InvoiceForm = ({
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
               disabled={isSubmitting}
             >
-              Create Invoice
+              {isEditing ? 'Update Invoice' : 'Create Invoice'}
             </button>
             {onCancel && (
               <button

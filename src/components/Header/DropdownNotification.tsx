@@ -27,7 +27,7 @@ function generateFeeNotifications(
     return {
       header: `${client.client_name}'s fee is ${feeType}`,
       description: messageDescription,
-      feeDate: `Fee Date: ${moment(client.fee_date).format('MMM D YYYY')}`,
+      feeDate: `Fee Date: ${moment(client.fee_date).format('DD MMM YYYY')}`,
     };
   }
 

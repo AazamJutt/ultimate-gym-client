@@ -60,10 +60,10 @@ const EditMembership = () => {
       if (!response.error) {
         toast.success('Membership updated successfully');
         navigate(`/memberships/all`);
-      } else toast.error('Could not update Membership');
+      } else toast.error(response?.data?.message || 'Could not update Membership');
     } catch (error) {
       console.error('Failed to update Membership:', error);
-      toast.error('Failed to update Membership:', error?.message);
+      toast.error(error?.data?.message || 'Failed to update Membership');
     }
   };
   return (

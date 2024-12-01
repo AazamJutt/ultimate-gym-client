@@ -42,10 +42,10 @@ const AddMember = () => {
       if (!response.error) {
         toast.success('Member added successfully')
         navigate(`/members/all`)
-      } else toast.error('Could not add member');;
+      } else toast.error(response?.data?.message || 'Could not add member');;
     } catch (error) {
       console.error('Failed to add member:', error);
-      toast.error('Failed to add member:', error.message);
+      toast.error(error?.data?.message || 'Failed to add member');
     }
   };
 

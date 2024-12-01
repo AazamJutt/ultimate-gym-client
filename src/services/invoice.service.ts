@@ -34,7 +34,31 @@ export const invoiceApi = ultimateGymApiSlice.injectEndpoints({
       }),
       invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
     }),
+    editInvoice: builder.mutation<void, { id: number; data: Partial<Invoice> }>({
+      query: ({ id, data }) => ({
+        url: `/invoices/${id}`,
+        method: 'PATCH',
+        body: data,
+      }),
+      invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
+    }),
+    adjustInvoice: builder.mutation<void, { id: number; data: Partial<Invoice> }>({
+      query: ({ id, data }) => ({
+        url: `/invoices/${id}/adjust`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
+    }),
+    returnInvoice: builder.mutation<void, { id: number; data: Partial<Invoice> }>({
+      query: ({id, data}) => ({
+        url: `/invoices/${id}/return`,
+        method: 'PUT',
+        body: data,
+      }),
+      invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
+    }),
   }),
 });
 
-export const { useGetInvoicesQuery, useCreateInvoiceMutation } = invoiceApi;
+export const { useGetInvoicesQuery, useCreateInvoiceMutation, useAdjustInvoiceMutation, useReturnInvoiceMutation, useEditInvoiceMutation } = invoiceApi;

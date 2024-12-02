@@ -14,20 +14,32 @@ function generateFeeNotifications(
 
   // Helper function to format the notification object
   function createNotification(client: any, isOverdue: any) {
-    const totalFee = client.training_fee + client.personal_fee;
+    const totalFee =
+      client.training_fee + client.personal_fee + client.locker_fee;
     const feeType = isOverdue ? 'overdue' : 'due soon';
     const messageDescription = `${
       client.client_name
-    }'s fee of PKR ${totalFee} (Training: ${client.training_fee}, Personal: ${
+    }'s fee of PKR ${totalFee} (Training: ${client.training_fee}, Membership: ${
       client.personal_fee
-    }) for the ${client.package_name} package is ${feeType} on ${moment(
-      client.fee_date,
-    ).format('MMM D YYYY')}. Please contact: ${client.client_phone}`;
+    }, Locker: ${client.locker_fee}) for the ${
+      client.package_name
+    } package is ${feeType} on ${moment(client.fee_date).format(
+      'MMM D YYYY',
+    )}. Please contact: ${client.client_phone}`;
+
+    const clientMessage = `Dear Valued Member, Your membership fee of PKR ${totalFee} (Training: ${client.training_fee}, Membership: ${
+      client.personal_fee
+    }, Locker: ${client.locker_fee}) for ${
+      client.package_name
+    } package is ${feeType}. Due date: ${moment(client.fee_date).format(
+      'MMM D YYYY'
+    )}. Please clear your dues to continue enjoying our services. Thank you!`;
 
     return {
       header: `${client.client_name}'s fee is ${feeType}`,
       description: messageDescription,
       feeDate: `Fee Date: ${moment(client.fee_date).format('DD MMM YYYY')}`,
+      message: clientMessage
     };
   }
 
@@ -46,6 +58,7 @@ function generateFeeNotifications(
 const DropdownNotification = () => {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [notifying, setNotifying] = useState(true);
+  const [copiedId, setCopiedId] = useState<number | null>(null);
   const user = useSelector((state: RootState) => state.auth.user);
   const [notifications, setNotifications] = useState([]);
   const {
@@ -67,6 +80,12 @@ const DropdownNotification = () => {
       setNotifying(true);
     }
   }, [notifications]);
+
+  const handleCopyMessage = (message: string, idx: number) => {
+    navigator.clipboard.writeText(message);
+    setCopiedId(idx);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
 
   return (
     <ClickOutside onClick={() => setDropdownOpen(false)} className="relative">
@@ -115,23 +134,41 @@ const DropdownNotification = () => {
             </div>
 
             <ul className="flex h-auto flex-col overflow-y-auto">
-              {notifications?.length ? notifications.map((notification, idx) => (
-                <li>
-                  <Link
-                    className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
-                    to="#"
-                  >
-                    <p className="text-sm">
-                      <span className="text-black dark:text-white">
-                        {notification.header}
-                      </span>{' '}
-                      {notification.description}
-                    </p>
+              {notifications?.length ? (
+                notifications.map((notification, idx) => (
+                  <li key={idx}>
+                    <Link
+                      className="flex flex-col gap-2.5 border-t border-stroke px-4.5 py-3 hover:bg-gray-2 dark:border-strokedark dark:hover:bg-meta-4"
+                      to="#"
+                    >
+                      <p className="text-sm">
+                        <span className="text-black dark:text-white">
+                          {notification.header}
+                        </span>{' '}
+                        <span>{notification.description}</span>
+                      </p>
 
-                    <p className="text-xs">{notification.feeDate}</p>
-                  </Link>
-                </li>
-              )): <div className="h-70 text-sm font-medium text-bodydark2 flex justify-center items-center">No Notifications</div>}
+                      <div className="flex justify-between items-center">
+                        <p className="text-xs">{notification.feeDate}</p>
+                        <button
+                          onClick={() => handleCopyMessage(notification.message, idx)}
+                          className={`px-2 py-1 text-xs rounded transition-colors duration-300 ${
+                            copiedId === idx
+                              ? 'bg-success text-white hover:bg-success/90'
+                              : 'bg-primary text-white hover:bg-opacity-90'
+                          }`}
+                        >
+                          {copiedId === idx ? 'Copied!' : 'Copy Message'}
+                        </button>
+                      </div>
+                    </Link>
+                  </li>
+                ))
+              ) : (
+                <div className="h-70 text-sm font-medium text-bodydark2 flex justify-center items-center">
+                  No Notifications
+                </div>
+              )}
             </ul>
           </div>
         )}

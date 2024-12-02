@@ -437,8 +437,8 @@ const MembershipForm = ({
               Total Fee: PKR{' '}
               {values.personal_fee +
                 values.training_fee +
-                (!isEditing ? registration_fee : 0) +
-                (values.locker_number ? locker_fee : 0)}
+                (!isEditing ? values.registration_fee : 0) +
+                (values.locker_number ? values.locker_fee : 0)}
               /-
               {!isSubForm && (
                 <button

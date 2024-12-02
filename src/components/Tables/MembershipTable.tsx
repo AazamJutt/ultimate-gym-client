@@ -146,6 +146,12 @@ const MembershipTable = ({
               </th>
               <th
                 scope="col"
+                className="bg-gray-500 dark:bg-meta-4 px-6 py-3"
+              >
+                <p className="text-black dark:text-white">Locker Number</p>
+              </th>
+              <th
+                scope="col"
                 className="bg-gray-500 min-w-[155px]
                dark:bg-meta-4 px-6 py-3"
               >
@@ -296,6 +302,11 @@ const MembershipTable = ({
                             <FaFileInvoice />
                           </button>
                         )}
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
+                        {membership.locker_number || 'N/A'}
+                      </p>
                     </td>
                     <td className="px-6 py-4">
                       <p className="text-black dark:text-white">

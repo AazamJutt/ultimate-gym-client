@@ -163,6 +163,12 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
               </th>
               <th
                 scope="col"
+                className="bg-gray-500 dark:bg-meta-4 px-6 py-3"
+              >
+                <p className="text-black dark:text-white">Locker Number</p>
+              </th>
+              <th
+                scope="col"
                 className="bg-gray-500 min-w-[155px]
                dark:bg-meta-4 px-6 py-3"
               >
@@ -309,6 +315,11 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                     <td className="px-6 py-4 min-w-[150px]">
                       <p className="text-black dark:text-white">
                         {invoices.due_date}
+                      </p>
+                    </td>
+                    <td className="px-6 py-4">
+                      <p className="text-black dark:text-white">
+                        {invoices.locker_number || 'N/A'}
                       </p>
                     </td>
                     <td className="px-6 py-4">

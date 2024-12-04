@@ -237,7 +237,7 @@ const InvoicePrint = ({
           }}
         >
           <div>Software Developed by: Codefumes</div>
-          <div>0349-4902816, info@codefumes.tech</div>
+          <div>0349-4902816, codefumes.core@gmail.com</div>
         </section>
       </div>
     </div>

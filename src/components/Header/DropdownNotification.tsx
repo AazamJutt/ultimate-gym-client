@@ -17,28 +17,30 @@ function generateFeeNotifications(
     const totalFee =
       client.training_fee + client.personal_fee + client.locker_fee;
     const feeType = isOverdue ? 'overdue' : 'due soon';
+
+    // Build fee breakdown string only including non-zero fees
+    const feeBreakdown = [
+      client.training_fee ? `Training: ${client.training_fee}` : null,
+      client.personal_fee ? `Membership: ${client.personal_fee}` : null, 
+      client.locker_fee ? `Locker: ${client.locker_fee}` : null
+    ].filter(Boolean).join(', ');
+
+    const formattedDate = moment(client.fee_date).format('MMMM DD, YYYY');
+
     const messageDescription = `${
       client.client_name
-    }'s fee of PKR ${totalFee} (Training: ${client.training_fee}, Membership: ${
-      client.personal_fee
-    }, Locker: ${client.locker_fee}) for the ${
+    }'s fee of PKR ${totalFee} (${feeBreakdown}) for the ${
       client.package_name
-    } package is ${feeType} on ${moment(client.fee_date).format(
-      'MMM D YYYY',
-    )}. Please contact: ${client.client_phone}`;
+    } package is ${feeType} on ${formattedDate}. Please contact: ${client.client_phone}`;
 
-    const clientMessage = `Dear Valued Member, Your membership fee of PKR ${totalFee} (Training: ${client.training_fee}, Membership: ${
-      client.personal_fee
-    }, Locker: ${client.locker_fee}) for ${
+    const clientMessage = `Dear Valued Member of The Ultimate Gym, Your membership fee of PKR ${totalFee} (${feeBreakdown}) for ${
       client.package_name
-    } package is ${feeType}. Due date: ${moment(client.fee_date).format(
-      'MMM D YYYY'
-    )}. Please clear your dues to continue enjoying our services. Thank you!`;
+    } package is ${feeType}. Due date: ${formattedDate}. Please clear your dues to continue enjoying our services. Thank you!`;
 
     return {
       header: `${client.client_name}'s fee is ${feeType}`,
       description: messageDescription,
-      feeDate: `Fee Date: ${moment(client.fee_date).format('DD MMM YYYY')}`,
+      feeDate: `Fee Date: ${formattedDate}`,
       message: clientMessage
     };
   }

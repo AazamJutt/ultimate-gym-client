@@ -32,33 +32,89 @@ export const invoiceApi = ultimateGymApiSlice.injectEndpoints({
         method: 'POST',
         body: newPacakge,
       }),
-      invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
+      invalidatesTags: [
+        'Invoice',
+        'Dashboard',
+        'Membership',
+        'Sales',
+        'RevenueAnalytics',
+      ],
     }),
-    editInvoice: builder.mutation<void, { id: number; data: Partial<Invoice> }>({
-      query: ({ id, data }) => ({
-        url: `/invoices/${id}`,
-        method: 'PATCH',
-        body: data,
-      }),
-      invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
-    }),
-    adjustInvoice: builder.mutation<void, { id: number; data: Partial<Invoice> }>({
+    editInvoice: builder.mutation<void, { id: number; data: Partial<Invoice> }>(
+      {
+        query: ({ id, data }) => ({
+          url: `/invoices/${id}`,
+          method: 'PATCH',
+          body: data,
+        }),
+        invalidatesTags: [
+          'Invoice',
+          'Dashboard',
+          'Membership',
+          'Sales',
+          'RevenueAnalytics',
+        ],
+      },
+    ),
+    adjustInvoice: builder.mutation<
+      void,
+      { id: number; data: Partial<Invoice> }
+    >({
       query: ({ id, data }) => ({
         url: `/invoices/${id}/adjust`,
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
+      invalidatesTags: [
+        'Invoice',
+        'Dashboard',
+        'Membership',
+        'Sales',
+        'RevenueAnalytics',
+      ],
     }),
-    returnInvoice: builder.mutation<void, { id: number; data: Partial<Invoice> }>({
-      query: ({id, data}) => ({
+    returnInvoice: builder.mutation<
+      void,
+      { id: number; data: Partial<Invoice> }
+    >({
+      query: ({ id, data }) => ({
         url: `/invoices/${id}/return`,
         method: 'PUT',
         body: data,
       }),
-      invalidatesTags: ['Invoice', 'Dashboard', 'Membership', 'Sales', 'RevenueAnalytics'],
+      invalidatesTags: [
+        'Invoice',
+        'Dashboard',
+        'Membership',
+        'Sales',
+        'RevenueAnalytics',
+      ],
+    }),
+    deleteInvoice: builder.mutation<
+      void,
+      { id: number; note: string }
+    >({
+      query: ({ id, note }) => ({
+        url: `/invoices/${id}`,
+        method: 'POST',
+        body: { note },
+      }),
+      invalidatesTags: [
+        'Invoice',
+        'Dashboard',
+        'Membership',
+        'Sales',
+        'RevenueAnalytics',
+      ],
     }),
   }),
 });
 
-export const { useGetInvoicesQuery, useCreateInvoiceMutation, useAdjustInvoiceMutation, useReturnInvoiceMutation, useEditInvoiceMutation } = invoiceApi;
+export const {
+  useGetInvoicesQuery,
+  useCreateInvoiceMutation,
+  useAdjustInvoiceMutation,
+  useReturnInvoiceMutation,
+  useEditInvoiceMutation,
+  useDeleteInvoiceMutation,
+} = invoiceApi;

@@ -76,7 +76,7 @@ const MembershipForm = ({
       (setting: Setting) => setting.key === 'staffCanEditMembershipFee',
     )?.value === 'Yes';
   const { data: lockers } = useGetLockersQuery({ assigned: false });
-  
+
   if (!isSubForm) {
     formik = useFormik({
       enableReinitialize,
@@ -150,6 +150,13 @@ const MembershipForm = ({
       name ? `${name}.personal_fee` : 'personal_fee',
       selectedPackage.price,
     );
+    // Update locker fee based on package period
+    if (values.locker_number) {
+      formik.setFieldValue(
+        name ? `${name}.locker_fee` : 'locker_fee',
+        locker_fee * selectedPackage.period
+      );
+    }
     formik.validateForm();
   }, [values.package_id]);
 
@@ -159,7 +166,14 @@ const MembershipForm = ({
     // Assuming you want to set the trainer_id in formik
     formik.setFieldValue(
       name ? `${name}.locker_fee` : 'locker_fee',
-      selectedLockerNumber ? locker_fee : 0,
+      selectedLockerNumber
+        ? locker_fee *
+            (values.package_id
+              ? packages?.data?.find(
+                  (pkg: Package) => pkg.id === Number(values.package_id),
+                )?.period || 1
+              : 1)
+        : 0,
     );
     formik.setFieldValue(
       name ? `${name}.locker_number` : 'locker_number',
@@ -401,7 +415,9 @@ const MembershipForm = ({
                     </label>
                     <input
                       type="number"
-                      name={name ? `${name}.registration_fee` : 'registration_fee'}
+                      name={
+                        name ? `${name}.registration_fee` : 'registration_fee'
+                      }
                       placeholder="Enter registration fee"
                       className="w-full rounded border-[1.5px] border-stroke bg-transparent py-3 px-5 text-black outline-none transition focus:border-primary active:border-primary dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                       value={values.registration_fee}

@@ -48,6 +48,7 @@ const MembershipList = ({ listFilter }: ListProps) => {
   const [itemsPerPage, setItemsPerPage] = useState(10); // Default items per page
   const [totalItems, setTotalItems] = useState(100); // Default items per page
   const [invoiceData, setInvoiceData] = useState<Invoice | null>(null); // State for invoice data
+  const [paginationGroup, setPaginationGroup] = useState(0); // State for pagination group
 
   // Calculate total pages
   const totalPages = Math.ceil(totalItems / itemsPerPage);
@@ -56,10 +57,24 @@ const MembershipList = ({ listFilter }: ListProps) => {
   const handlePageChange = (pageNumber: number) => {
     setCurrentPage(pageNumber);
   };
+
+  const handleNextGroup = () => {
+    if ((paginationGroup + 1) * 10 < totalPages) {
+      setPaginationGroup(paginationGroup + 1);
+    }
+  };
+
+  const handlePreviousGroup = () => {
+    if (paginationGroup > 0) {
+      setPaginationGroup(paginationGroup - 1);
+    }
+  };
+
   const handleCancelInvoice = () => {
     setShowInvoiceModal(false);
     setSelectedMembership(null);
   };
+
   // Handle items per page change
   const handleItemsPerPageChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -108,9 +123,11 @@ const MembershipList = ({ listFilter }: ListProps) => {
       toast.error(error?.data?.message || 'Failed to create Package');
     }
   };
+
   useEffect(() => {
     refetch();
   }, []);
+
   const handleCreateInvoice = (membership: Membership) => {
     setSelectedMembership(membership);
     setShowInvoiceModal(true);
@@ -131,6 +148,7 @@ const MembershipList = ({ listFilter }: ListProps) => {
       }
     }
   }, [memberships, searchParams]);
+
   return (
     <>
       <Breadcrumb pageName="Memberships" />
@@ -259,19 +277,35 @@ const MembershipList = ({ listFilter }: ListProps) => {
       {/* Pagination Controls */}
       <div className="flex items-center justify-between bg-white dark:bg-meta-4 p-2 px-3">
         <div className="flex justify-end gap-3">
-          {Array.from({ length: totalPages }, (_, index) => (
+          {paginationGroup > 0 && (
             <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
+              onClick={handlePreviousGroup}
+              className="mx-1 h-10 w-10 rounded bg-gray-200 text-black dark:text-white"
+            >
+              &lt;
+            </button>
+          )}
+          {Array.from({ length: Math.min(10, totalPages - paginationGroup * 10) }, (_, index) => (
+            <button
+              key={index + 1 + paginationGroup * 10}
+              onClick={() => handlePageChange(index + 1 + paginationGroup * 10)}
               className={`mx-1 h-10 w-10 rounded ${
-                currentPage === index + 1
+                currentPage === index + 1 + paginationGroup * 10
                   ? 'bg-blue-500 text-white'
                   : 'bg-gray-200 text-black dark:text-white'
               }`}
             >
-              {index + 1}
+              {index + 1 + paginationGroup * 10}
             </button>
           ))}
+          {(paginationGroup + 1) * 10 < totalPages && (
+            <button
+              onClick={handleNextGroup}
+              className="mx-1 h-10 w-10 rounded bg-gray-200 text-black dark:text-white"
+            >
+              &gt;
+            </button>
+          )}
         </div>
         {/* Page Size Selector */}
         <div className="flex items-center gap-2 relative">

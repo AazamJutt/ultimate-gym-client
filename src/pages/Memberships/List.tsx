@@ -310,7 +310,7 @@ const MembershipList = ({ listFilter }: ListProps) => {
                 package_name: selectedMembership.package_name,
                 nutritionist_id: selectedMembership?.nutritionist_id || null,
                 training_fee: selectedMembership?.training_fee || 0,
-                registration_fee: selectedMembership?.registration_fee || 0,
+                registration_fee: 0,
                 personal_fee: selectedMembership?.personal_fee || 0,
                 locker_fee: selectedMembership?.locker_fee || 0,
                 locker_number: selectedMembership?.locker_number || '',

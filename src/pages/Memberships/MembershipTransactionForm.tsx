@@ -147,6 +147,13 @@ const MembershipTransactionForm = () => {
     }
   }, [formik.values]);
 
+  const handleClear = () => {
+    localStorage.removeItem(FORM_STORAGE_KEY);
+    setClientImage(undefined);
+    formik.resetForm({values: defaultValues});
+    toast.success('Form cleared successfully');
+  };
+
   return (
     <form onSubmit={formik.handleSubmit}>
       <Breadcrumb pageName="Create Membership" />
@@ -161,12 +168,21 @@ const MembershipTransactionForm = () => {
         name="membership"
         isSubForm={true}
       />
-      <button
-        type="submit"
-        className="mt-4 w-full rounded bg-primary py-3 text-white"
-      >
-        Add Membership
-      </button>
+      <div className="mt-4 flex gap-4">
+        <button
+          type="submit"
+          className="w-90 rounded bg-primary px-4 py-2 text-white"
+        >
+          Add Membership
+        </button>
+        <button
+          type="button"
+          onClick={handleClear}
+          className="rounded bg-danger px-4 py-2 text-white"
+        >
+          Clear Form
+        </button>
+      </div>
     </form>
   );
 };

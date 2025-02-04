@@ -1,19 +1,37 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { RootState } from '../store';
+import { logout } from './auth.slice';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: 'http://localhost:8080/api',
   prepareHeaders: (headers, { getState }) => {
-    // Retrieve the token from your state (modify according to your state structure)
     const token = (getState() as RootState).auth.user?.token;
-    // If a token exists, set it in the Authorization header
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }
-
     return headers;
   },
 });
+
+const baseQueryWithLogout = async (args: any, api: any, extraOptions: any) => {
+  const result = await baseQuery(args, api, extraOptions);
+  
+  if (result.error) {
+    const error = result.error as FetchBaseQueryError;
+    
+    if (error.status === 401 || error.status === 403) {
+      localStorage.clear();
+      
+      api.dispatch(logout());
+    }
+    
+    if (error.status === 500) {
+      console.error('Server error:', error);
+    }
+  }
+  
+  return result;
+};
 
 export const ultimateGymApiSlice = createApi({
   reducerPath: 'apiSlice',
@@ -33,6 +51,6 @@ export const ultimateGymApiSlice = createApi({
     'Sales',
     'RevenueAnalytics',
   ],
-  baseQuery: baseQuery,
+  baseQuery: baseQueryWithLogout,
   endpoints: (builder) => ({}),
 });

@@ -2,6 +2,7 @@
 import { ultimateGymApiSlice } from '../redux/slices/gymApi.slice';
 import { ApiResponse } from '../types/ApiResponse';
 import { User } from '../types/User';
+import api from './api.service';
 
 export const userApi = ultimateGymApiSlice.injectEndpoints({
   endpoints: (builder) => ({
@@ -62,3 +63,16 @@ export const {
   useGetUsersListQuery,
   useDeleteUserMutation,
 } = userApi;
+
+export const userService = {
+  async getProfile() {
+    try {
+      const response = await api.get('/users/profile');
+      return response.data;
+    } catch (error) {
+      // The API service will handle token expiry automatically
+      throw error;
+    }
+  },
+  // other methods...
+};

@@ -155,11 +155,9 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
   };
 
   const canDeleteInvoice = (invoice: Invoice) => {
-    // Get all invoices for this membership and package
+    // Get all invoices for this membership
     const membershipInvoices = invoices.filter(
-      (inv) =>
-        inv.membership_id === invoice.membership_id &&
-        inv.package_id === invoice.package_id,
+      (inv) => inv.membership_id === invoice.membership_id,
     );
 
     // Sort by created_at date descending
@@ -167,10 +165,8 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
       (a, b) => moment(b.created_at).valueOf() - moment(a.created_at).valueOf(),
     );
 
-    // Only allow deletion if this is not the most recent invoice and status is not returned
-    return (
-      sortedInvoices[0]?.id !== invoice.id && invoice.status !== 'returned'
-    );
+    // Only allow deletion if this is not the most recent invoice
+    return sortedInvoices[0]?.id !== invoice.id;
   };
 
   return (
@@ -336,10 +332,6 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                                   ? 'bg-stroke dark:bg-boxdark'
                                   : ''
                               } ${
-                                invoice?.status === 'active'
-                                  ? 'bg-meta-3/30 dark:text-white'
-                                  : ''
-                              } ${
                                 invoice?.status === 'returned'
                                   ? 'bg-meta-1/20 dark:bg-meta-1/40 dark:text-white'
                                   : ''
@@ -447,14 +439,16 @@ const InvoicesTable = ({ loading, invoices }: InvoicesTableProps) => {
                             Adjust
                           </button>
                         )}
-                        {user?.role === 'admin' && canDelete && (
-                          <button
-                            onClick={() => openDeleteModal(invoice)}
-                            className="h-5 px-3 border border-danger bg-danger bg-opacity-20 text-danger rounded hover:bg-opacity-30 transition-colors duration-300"
-                          >
-                            Delete
-                          </button>
-                        )}
+                        {user?.role === 'admin' &&
+                          canDelete &&
+                          invoice?.status !== 'returned' && (
+                            <button
+                              onClick={() => openDeleteModal(invoice)}
+                              className="h-5 px-3 border border-danger bg-danger bg-opacity-20 text-danger rounded hover:bg-opacity-30 transition-colors duration-300"
+                            >
+                              Delete
+                            </button>
+                          )}
                       </td>
                     </tr>
                   );

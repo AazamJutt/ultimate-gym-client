@@ -76,12 +76,15 @@ const UserForm = ({ onSubmit, initialValues, onCancel }: UserFormProps) => {
               Role
             </label>
             <Field
-              type="text"
-              placeholder="Enter role"
+              as="select"
               name="role"
               id="role"
               className="bg-stroke dark:bg-strokedark mt-1 p-2 block w-full border dark:border-form-strokedark rounded"
-            />
+            >
+              <option value="">Select a role</option>
+              <option value="admin">Admin</option>
+              <option value="receptionist">Receptionist</option>
+            </Field>
             <ErrorMessage
               name="role"
               component="div"

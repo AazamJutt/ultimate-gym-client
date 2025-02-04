@@ -2,10 +2,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { jwtDecode } from "jwt-decode";
 
+interface DecodedToken {
+  role: string;
+  exp: number;
+}
+
 export interface User {
   role: string;
   token: string;
 }
+
 interface AuthState {
   isLoggedIn: boolean;
   user: User | null;
@@ -21,8 +27,8 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     loginUser: (state, action: PayloadAction<string>) => {
-      const user: User = jwtDecode(action.payload);
-      state.user = {...user, token: action.payload  };
+      const decoded = jwtDecode<DecodedToken>(action.payload);
+      state.user = { role: decoded.role, token: action.payload };
       state.isLoggedIn = true;
     },
     logout: (state) => {

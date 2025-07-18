@@ -282,28 +282,33 @@ const MembershipList = ({ listFilter }: ListProps) => {
               onClick={handlePreviousGroup}
               className="mx-1 h-10 w-10 rounded bg-gray-200 text-black dark:text-white"
             >
-              &lt;
+              ◀
             </button>
           )}
-          {Array.from({ length: Math.min(10, totalPages - paginationGroup * 10) }, (_, index) => (
-            <button
-              key={index + 1 + paginationGroup * 10}
-              onClick={() => handlePageChange(index + 1 + paginationGroup * 10)}
-              className={`mx-1 h-10 w-10 rounded ${
-                currentPage === index + 1 + paginationGroup * 10
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-black dark:text-white'
-              }`}
-            >
-              {index + 1 + paginationGroup * 10}
-            </button>
-          ))}
+          {Array.from(
+            { length: Math.min(10, totalPages - paginationGroup * 10) },
+            (_, index) => (
+              <button
+                key={index + 1 + paginationGroup * 10}
+                onClick={() =>
+                  handlePageChange(index + 1 + paginationGroup * 10)
+                }
+                className={`mx-1 h-10 w-10 rounded ${
+                  currentPage === index + 1 + paginationGroup * 10
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-black dark:text-white'
+                }`}
+              >
+                {index + 1 + paginationGroup * 10}
+              </button>
+            ),
+          )}
           {(paginationGroup + 1) * 10 < totalPages && (
             <button
               onClick={handleNextGroup}
               className="mx-1 h-10 w-10 rounded bg-gray-200 text-black dark:text-white"
             >
-              &gt;
+              ▶
             </button>
           )}
         </div>

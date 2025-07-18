@@ -8,9 +8,7 @@ import { MembershipFilters } from '../../types/MembershipFilters';
 
 const LockersList = () => {
   const [search, setSearch] = useState('');
-  const [filter, setFilter] = useState<MembershipFilters>(
-    { status: '' },
-  );
+  const [filter, setFilter] = useState<MembershipFilters>({ status: '' });
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,6 +40,28 @@ const LockersList = () => {
     search,
     filter,
   });
+
+  const batchSize = 10; // Number of pages to show in one batch
+  const [batchStart, setBatchStart] = useState(0); // Index of first page in the current batch
+
+  const handleNextBatch = () => {
+    if (batchStart + batchSize < totalPages) {
+      setBatchStart(batchStart + batchSize);
+    }
+  };
+
+  const handlePrevBatch = () => {
+    if (batchStart - batchSize >= 0) {
+      setBatchStart(batchStart - batchSize);
+    }
+  };
+
+
+  const currentBatch = Array.from(
+    { length: Math.min(batchSize, totalPages - batchStart) },
+    (_, i) => batchStart + i + 1,
+  );
+
 
   useEffect(() => {
     if (lockers) {
@@ -101,20 +121,38 @@ const LockersList = () => {
 
       {/* Pagination Controls */}
       <div className="flex items-center justify-between bg-white dark:bg-meta-4 p-2 px-3">
-        <div className="flex justify-end gap-3">
-          {Array.from({ length: totalPages }, (_, index) => (
-            <button
-              key={index + 1}
-              onClick={() => handlePageChange(index + 1)}
-              className={`mx-1 h-10 w-10 rounded ${
-                currentPage === index + 1
-                  ? 'bg-blue-500 text-white'
-                  : 'bg-gray-200 text-black dark:text-white'
-              }`}
-            >
-              {index + 1}
-            </button>
-          ))}
+        <div className="flex justify-end gap-3 items-center">
+          <button
+            onClick={handlePrevBatch}
+            disabled={batchStart === 0}
+            className="px-2 py-1 bg-gray-300 rounded disabled:opacity-50"
+          >
+            ◀
+          </button>
+
+          <div className="flex overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
+            {currentBatch.map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageChange(page)}
+                className={`mx-1 h-10 w-10 rounded flex-shrink-0 ${
+                  currentPage === page
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-black dark:text-white'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={handleNextBatch}
+            disabled={batchStart + batchSize >= totalPages}
+            className="px-2 py-1 bg-gray-300 rounded disabled:opacity-50"
+          >
+            ▶
+          </button>
         </div>
         {/* Page Size Selector */}
         <div className="flex items-center gap-2 relative">
